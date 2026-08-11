@@ -6,3 +6,11 @@
 - Estructura de carpetas base armada
 - Movido a repo propio (estaba anidado en otro repo por error, corregido)
 - Pendiente: aún no se creó el proyecto real en Supabase
+
+## Fase 2 — Base de datos en Supabase
+- Proyecto de Supabase linkeado (CLI autenticado con supabase login)
+- Migración 00001_initial_schema.sql aplicada con éxito
+- Tablas creadas: categories, products, product_images, product_variants, orders, order_items
+- RLS habilitada en las 6 tablas: lectura pública en catálogo (categories, products, product_images, product_variants), insert público en orders/order_items, resto sin política = bloqueado por defecto
+- El admin va a operar con la service_role/secret key (bypassea RLS) desde server actions o API routes, todavía no implementado
+- Verificado con: npx supabase db diff (sin diferencias)
