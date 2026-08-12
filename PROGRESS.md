@@ -15,3 +15,21 @@
 - El admin va a operar con la service_role/secret key (bypassea RLS) desde server actions o API routes, todavía no implementado
 - Verificado con: npx supabase migration list (local y remoto alineados). npx supabase db diff no está disponible en este entorno por falta de Docker Desktop.
 - Nota: usar `npx supabase migration new nombre_descriptivo` para generar migraciones futuras (timestamp automático), evitando el flag --include-all.
+
+## Fase 3 — Páginas públicas: Home y listado por categoría
+- Tipografías configuradas: Cormorant Garamond (display), Work Sans (body), Caveat (accent)
+- Tokens de color en Tailwind: sand, ink, caramel, rose, card
+- Componentes creados: Header, Footer, CategoryCard, ProductCard, Arrow (elemento de marca reutilizable)
+- Home: hero con mosaico de imágenes (placeholders) + grilla de categorías desde Supabase
+- Página de categoría dinámica: app/(shop)/categoria/[slug]/page.js, con notFound() si el slug no existe
+- Pendiente: página de producto individual (Fase 4), fotos reales (se cargan desde el admin en fases posteriores)
+
+### Notas técnicas de la Fase 3
+- Tailwind v4: los tokens van con `@theme` en app/globals.css (no hay tailwind.config.js)
+- next/font expone las variables como `--font-cormorant` / `--font-work-sans` / `--font-caveat`, y `@theme inline` las mapea a las utilidades `font-display` / `font-body` / `font-accent`. Los nombres se mantienen distintos a propósito: si la variable de next/font y el token de Tailwind se llaman igual, la referencia queda circular.
+- Next 16: `params` es una promesa, hay que `await params` en las rutas dinámicas
+- Next 16 ya no sobrescribe `scroll-behavior` al navegar: el `<html>` lleva `scroll-smooth` + `data-scroll-behavior="smooth"`
+- next.config.mjs: `images.remotePatterns` habilita placehold.co y **.supabase.co para next/image
+- products todavía no tiene columna slug: ProductCard linkea usando el id como fallback
+- La imagen de cada producto se resuelve con un solo query a product_images usando `.in()`, no uno por producto
+- app/page.js (boilerplate) se eliminó porque colisionaba con app/(shop)/page.js en la ruta /
