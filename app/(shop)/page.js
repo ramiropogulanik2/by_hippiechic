@@ -13,7 +13,7 @@ export default async function HomePage() {
 
   const { data: categories, error } = await supabase
     .from("categories")
-    .select("id, name, slug")
+    .select("id, name, slug, image_url")
     .eq("is_visible", true)
     .order("display_order", { ascending: true });
 
@@ -82,7 +82,7 @@ export default async function HomePage() {
                 key={category.id}
                 name={category.name}
                 slug={category.slug}
-                imageUrl={null}
+                imageUrl={category.image_url}
               />
             ))}
           </div>

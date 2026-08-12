@@ -33,3 +33,9 @@
 - products todavía no tiene columna slug: ProductCard linkea usando el id como fallback
 - La imagen de cada producto se resuelve con un solo query a product_images usando `.in()`, no uno por producto
 - app/page.js (boilerplate) se eliminó porque colisionaba con app/(shop)/page.js en la ruta /
+
+## Fase 3.5 — Ajuste de schema: imagen de categoría y slug de producto
+- categories: agregada columna image_url (nullable, se completa desde el admin en fase futura)
+- products: agregada columna slug (not null, unique), generada automáticamente a partir del name para los productos existentes via extension unaccent
+- Actualizados los queries de home y categoría para usar estos campos
+- Pendiente: cuando se construya el admin de creación de productos (fase de CRUD), generar el slug automáticamente en el server action al guardar, no depender de que se cargue a mano

@@ -21,7 +21,7 @@ export default async function CategoryPage({ params }) {
 
   const { data: products, error } = await supabase
     .from("products")
-    .select("id, name, price")
+    .select("id, name, price, slug")
     .eq("category_id", category.id)
     .eq("is_published", true)
     .order("created_at", { ascending: false });
@@ -83,8 +83,7 @@ export default async function CategoryPage({ params }) {
               name={product.name}
               price={product.price}
               imageUrl={firstImageByProduct.get(product.id) ?? null}
-              // `products` no tiene columna slug todavía: usamos el id.
-              slug={product.id}
+              slug={product.slug}
             />
           ))}
         </div>
