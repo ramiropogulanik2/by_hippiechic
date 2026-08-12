@@ -82,3 +82,16 @@
 - IMPORTANTE — createOrder usa un cliente service_role (lib/supabase/admin.js), NO el cliente anon de lib/supabase/server.js. Motivo verificado contra la base: orders y order_items solo tienen política de INSERT para anon. Sin política de SELECT, `insert().select("id")` falla con "new row violates row-level security policy" y no se puede recuperar el id de la orden; sin política de DELETE, el rollback borraría 0 filas en silencio. Con service_role ambas cosas funcionan, y orders sigue sin ser legible públicamente (que es lo que se quiere: son datos de clientas).
 - lib/supabase/admin.js no debe importarse nunca desde un componente cliente. Verificado tras el build que ni "sb_secret" ni "SERVICE_ROLE" aparecen en .next/static/.
 - buildWhatsAppUrl devuelve null si falta NEXT_PUBLIC_WHATSAPP_NUMBER, para no redirigir a wa.me/undefined. En ese caso el pedido igual queda guardado y el carrito se vacía; el mensaje de error se muestra en la rama de carrito vacío (es donde queda la clienta después de confirmar).
+
+## Fase 7 — Login del panel admin
+- Supabase Auth (email/password) para autenticación, usuario creado manualmente en el dashboard (no hay registro público)
+- proxy.js protege todas las rutas /admin/*, redirige a /admin/login si no hay sesión
+- app/admin/login/page.js: formulario de login con signInWithPassword
+- app/admin/(protected)/layout.js: shell del admin con nav (links a Categorías/Productos/Pedidos, todavía no construidos) y logout
+- Pendiente: CRUD de categorías (Fase 8), productos (Fase 9), gestión de pedidos (Fase 10)
+
+### Notas técnicas de la Fase 7
+- El archivo NO se llama middleware.js: en Next 16 esa convención está deprecada y se renombró a proxy.js, con la función exportada como `proxy`. El build lo lista como "ƒ Proxy (Middleware)". Ojo: el runtime edge no está soportado en proxy (siempre corre en nodejs).
+- Shell del admin resuelto con route group app/admin/(protected)/, no leyendo el pathname con headers(). El grupo no aparece en la URL, así que (protected)/page.js sigue sirviendo /admin, y /admin/login queda fuera del grupo y por lo tanto sin shell. Evita el hack de pasar el pathname por un header custom desde el proxy.
+- El matcher "/admin/:path*" cubre también /admin exacto (verificado: /admin, /admin/productos y /admin/pedidos/123 redirigen los tres).
+- Tanto el login como el logout llaman router.refresh() después del push: sin eso el proxy sigue evaluando las cookies viejas.
