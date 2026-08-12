@@ -69,3 +69,16 @@
 - Fix: agregar `.png` a las URLs de placeholder.
 - RESUELTO en HERO_IMAGES (app/(shop)/page.js): verificado 200 / image/png en w=640, 750 y 1080.
 - PENDIENTE en las filas de product_images de la base (datos seed): las fotos de producto siguen dando 400 en home, categoría, producto y carrito. Se resuelve con un UPDATE sobre image_url, o solo cuando se carguen las fotos reales desde Supabase Storage (que ya vienen en JPG/PNG y no tienen este problema).
+
+## Fase 6 — Checkout: WhatsApp + guardado de orden
+- Server Action createOrder en lib/actions/orders.js: valida, calcula total, inserta orders + order_items, hace rollback manual si falla el segundo insert
+- lib/whatsapp.js: buildOrderMessage (arma texto del pedido) y buildWhatsAppUrl (arma el link wa.me)
+- Formulario de nombre (obligatorio) y teléfono (opcional) en /carrito
+- Flujo completo: confirmar → guardar en Supabase → limpiar carrito → redirigir a WhatsApp
+- Pendiente: cargar NEXT_PUBLIC_WHATSAPP_NUMBER real en .env.local (no versionado)
+- Con esto se cierra el flujo completo de compra del lado de la clienta. Lo que falta a partir de acá es el panel admin (Fases 7+)
+
+### Notas técnicas de la Fase 6
+- IMPORTANTE — createOrder usa un cliente service_role (lib/supabase/admin.js), NO el cliente anon de lib/supabase/server.js. Motivo verificado contra la base: orders y order_items solo tienen política de INSERT para anon. Sin política de SELECT, `insert().select("id")` falla con "new row violates row-level security policy" y no se puede recuperar el id de la orden; sin política de DELETE, el rollback borraría 0 filas en silencio. Con service_role ambas cosas funcionan, y orders sigue sin ser legible públicamente (que es lo que se quiere: son datos de clientas).
+- lib/supabase/admin.js no debe importarse nunca desde un componente cliente. Verificado tras el build que ni "sb_secret" ni "SERVICE_ROLE" aparecen en .next/static/.
+- buildWhatsAppUrl devuelve null si falta NEXT_PUBLIC_WHATSAPP_NUMBER, para no redirigir a wa.me/undefined. En ese caso el pedido igual queda guardado y el carrito se vacía; el mensaje de error se muestra en la rama de carrito vacío (es donde queda la clienta después de confirmar).
