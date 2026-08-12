@@ -95,3 +95,19 @@
 - Shell del admin resuelto con route group app/admin/(protected)/, no leyendo el pathname con headers(). El grupo no aparece en la URL, así que (protected)/page.js sigue sirviendo /admin, y /admin/login queda fuera del grupo y por lo tanto sin shell. Evita el hack de pasar el pathname por un header custom desde el proxy.
 - El matcher "/admin/:path*" cubre también /admin exacto (verificado: /admin, /admin/productos y /admin/pedidos/123 redirigen los tres).
 - Tanto el login como el logout llaman router.refresh() después del push: sin eso el proxy sigue evaluando las cookies viejas.
+
+## Fase 8 — CRUD de categorías (admin)
+- Bucket de Storage 'catalog-images' creado (público para lectura, solo authenticated puede escribir/borrar)
+- lib/slug.js: generación de slugs en JS, reutilizable para productos en Fase 9
+- lib/actions/categories.js: createCategory, updateCategory, deleteCategory (con manejo de FK violation), toggleCategoryVisibility, moveCategory
+- ImageUploadField.jsx: componente reutilizable de subida con preview, pensado también para Fase 9
+- Páginas: listado con reordenar/ocultar/eliminar, crear, editar
+- Patrón establecido: querys de lectura del admin usan el cliente admin (bypassea RLS) para poder ver/editar contenido oculto, no el cliente server normal
+
+### Notas técnicas de la Fase 8
+- Las páginas del admin que leen datos llevan `export const dynamic = "force-dynamic"`. El cliente admin no toca cookies, así que sin eso Next las prerenderiza en build time y el listado queda congelado.
+- La subida corre server-side con service_role, que bypassea también la RLS de storage. Las policies de la migración no se ejercitan hoy: quedan como defensa por si en el futuro se sube desde el browser con la sesión del admin.
+- slugify usa \p{Diacritic} sobre el string normalizado en NFD. Las marcas se sacan ANTES del filtro [^a-z0-9], porque si no cada acento se convertiría en guión ("cámara" -> "ca-mara").
+- En edición se usa updateCategory.bind(null, id) del lado servidor, así CategoryForm siempre invoca action(formData) sin conocer el id.
+- moveCategory depende de que los display_order sean distintos entre sí. Hoy son 1,2,3. Si en algún momento quedan valores repetidos (por ejemplo varias filas en 0), el swap no tiene efecto visible.
+- Borrar una categoría NO borra su imagen del bucket: queda huérfana en Storage. No es urgente (el bucket es chico) pero conviene limpiarlo en alguna fase futura.
