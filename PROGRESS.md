@@ -13,4 +13,5 @@
 - Tablas creadas: categories, products, product_images, product_variants, orders, order_items
 - RLS habilitada en las 6 tablas: lectura pública en catálogo (categories, products, product_images, product_variants), insert público en orders/order_items, resto sin política = bloqueado por defecto
 - El admin va a operar con la service_role/secret key (bypassea RLS) desde server actions o API routes, todavía no implementado
-- Verificado con: npx supabase db diff (sin diferencias)
+- Verificado con: npx supabase migration list (local y remoto alineados). npx supabase db diff no está disponible en este entorno por falta de Docker Desktop.
+- Nota: usar `npx supabase migration new nombre_descriptivo` para generar migraciones futuras (timestamp automático), evitando el flag --include-all.
