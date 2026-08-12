@@ -63,8 +63,9 @@
 - QuantityStepper (components/ui/) se comparte entre la página de producto y el carrito. En producto min=1; en el carrito min=0, así restar desde 1 elimina la línea (usa el comportamiento documentado de updateQuantity).
 - Verificado en el navegador: no aparece ningún warning de hidratación al recargar /carrito con items persistidos.
 
-### BUG ABIERTO — imágenes rotas (viene de la Fase 3, no del carrito)
-- Todas las imágenes devuelven 400 del optimizador: `"url" parameter is valid but image type is not allowed`
+### BUG de imágenes (viene de la Fase 3, no del carrito) — parcialmente resuelto
+- Síntoma: las imágenes devuelven 400 del optimizador: `"url" parameter is valid but image type is not allowed`
 - Causa: placehold.co sirve SVG por defecto, y Next bloquea SVG en next/image (dangerouslyAllowSVG es false por defecto). No es un problema de remotePatterns: la URL pasa la validación de host.
-- Fix: agregar `.png` a las URLs de placeholder. Verificado que `https://placehold.co/600x800/EDE4D3/241F1A.png?text=Foto` devuelve image/png y el optimizador responde 200.
-- Falta aplicarlo en dos lugares: HERO_IMAGES en app/(shop)/page.js, y las filas de product_images en la base (datos seed).
+- Fix: agregar `.png` a las URLs de placeholder.
+- RESUELTO en HERO_IMAGES (app/(shop)/page.js): verificado 200 / image/png en w=640, 750 y 1080.
+- PENDIENTE en las filas de product_images de la base (datos seed): las fotos de producto siguen dando 400 en home, categoría, producto y carrito. Se resuelve con un UPDATE sobre image_url, o solo cuando se carguen las fotos reales desde Supabase Storage (que ya vienen en JPG/PNG y no tienen este problema).
