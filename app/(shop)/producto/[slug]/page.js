@@ -71,7 +71,14 @@ export default async function ProductPage({ params }) {
             </p>
           )}
 
-          <ProductVariantSelector variants={variants ?? []} />
+          <ProductVariantSelector
+            variants={variants ?? []}
+            productId={product.id}
+            productSlug={slug}
+            productName={product.name}
+            price={product.price}
+            imageUrl={images?.[0]?.image_url ?? null}
+          />
         </div>
       </div>
 

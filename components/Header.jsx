@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
 import Arrow from "@/components/ui/Arrow";
+import CartLink from "@/components/CartLink";
 
 export default function Header() {
   return (
@@ -33,10 +33,7 @@ export default function Header() {
           >
             Categorías
           </Link>
-          {/* Sin lógica ni contador todavía: eso llega en la Fase 5. */}
-          <span className="text-ink" aria-label="Carrito" title="Carrito">
-            <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
-          </span>
+          <CartLink />
         </nav>
       </div>
     </header>

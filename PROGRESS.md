@@ -50,3 +50,21 @@
 - onVariantChange en ProductVariantSelector es una prop OPCIONAL: la página es un Server Component y React no permite pasar funciones a Client Components. Queda lista para cuando un padre client la use en Fase 5.
 - Los datos seed solo ejercitan 2 de los 3 casos del selector: todas las variantes tienen color null y stock > 0. Las pills de color y el estado "sin stock" están implementados pero sin datos que los prueben.
 - Todos los productos tienen exactamente 1 imagen, así que la fila de miniaturas todavía no se ve (aparece a partir de 2).
+
+## Fase 5 — Carrito de compras
+- Store de Zustand en lib/store/cartStore.js con persist middleware (localStorage, key: hippiechic-cart)
+- Acciones: addItem (suma cantidad si ya existe la variante), removeItem, updateQuantity, clearCart
+- ProductVariantSelector conectado: agrega al carrito con la variante seleccionada + cantidad elegida
+- CartLink en el Header: contador de items, con guard de hidratación (mounted state) para evitar mismatch SSR/cliente
+- Página /carrito: lista editable (cantidad, eliminar), total calculado, botón "Hacer pedido" sin lógica todavía
+- Pendiente: Fase 6 conecta "Hacer pedido" con armado de mensaje de WhatsApp + guardado de la orden en Supabase
+
+### Notas técnicas de la Fase 5
+- QuantityStepper (components/ui/) se comparte entre la página de producto y el carrito. En producto min=1; en el carrito min=0, así restar desde 1 elimina la línea (usa el comportamiento documentado de updateQuantity).
+- Verificado en el navegador: no aparece ningún warning de hidratación al recargar /carrito con items persistidos.
+
+### BUG ABIERTO — imágenes rotas (viene de la Fase 3, no del carrito)
+- Todas las imágenes devuelven 400 del optimizador: `"url" parameter is valid but image type is not allowed`
+- Causa: placehold.co sirve SVG por defecto, y Next bloquea SVG en next/image (dangerouslyAllowSVG es false por defecto). No es un problema de remotePatterns: la URL pasa la validación de host.
+- Fix: agregar `.png` a las URLs de placeholder. Verificado que `https://placehold.co/600x800/EDE4D3/241F1A.png?text=Foto` devuelve image/png y el optimizador responde 200.
+- Falta aplicarlo en dos lugares: HERO_IMAGES en app/(shop)/page.js, y las filas de product_images en la base (datos seed).
