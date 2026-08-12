@@ -39,3 +39,14 @@
 - products: agregada columna slug (not null, unique), generada automáticamente a partir del name para los productos existentes via extension unaccent
 - Actualizados los queries de home y categoría para usar estos campos
 - Pendiente: cuando se construya el admin de creación de productos (fase de CRUD), generar el slug automáticamente en el server action al guardar, no depender de que se cargue a mano
+
+## Fase 4 — Página de producto individual
+- Componentes nuevos: ProductGallery (client, con miniaturas), ProductVariantSelector (client, pills de talle/color con validación de stock), Breadcrumb (reutiliza Arrow)
+- Página app/(shop)/producto/[slug]/page.js con notFound() si no existe o no está publicado
+- Botón "Agregar al carrito" visual y funcional en UI, sin lógica de estado todavía (Fase 5 lo conecta)
+- Selector maneja los 3 casos: solo talle, solo color/sin variantes, ambos
+
+### Notas técnicas de la Fase 4
+- onVariantChange en ProductVariantSelector es una prop OPCIONAL: la página es un Server Component y React no permite pasar funciones a Client Components. Queda lista para cuando un padre client la use en Fase 5.
+- Los datos seed solo ejercitan 2 de los 3 casos del selector: todas las variantes tienen color null y stock > 0. Las pills de color y el estado "sin stock" están implementados pero sin datos que los prueben.
+- Todos los productos tienen exactamente 1 imagen, así que la fila de miniaturas todavía no se ve (aparece a partir de 2).
