@@ -5,9 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 // El .png es necesario: placehold.co sirve SVG por defecto y next/image lo
 // rechaza con 400 (dangerouslyAllowSVG viene en false).
 const HERO_IMAGES = [
-  "https://placehold.co/600x800/EDE4D3/241F1A.png?text=Foto",
-  "https://placehold.co/600x800/EDE4D3/241F1A.png?text=Foto",
-  "https://placehold.co/600x800/EDE4D3/241F1A.png?text=Foto",
+  "https://placehold.co/600x800/B08D57/FFFCF7.png?text=Foto",
+  "https://placehold.co/600x800/B08D57/FFFCF7.png?text=Foto",
+  "https://placehold.co/600x800/B08D57/FFFCF7.png?text=Foto",
 ];
 
 export default async function HomePage() {
