@@ -63,12 +63,11 @@
 - QuantityStepper (components/ui/) se comparte entre la página de producto y el carrito. En producto min=1; en el carrito min=0, así restar desde 1 elimina la línea (usa el comportamiento documentado de updateQuantity).
 - Verificado en el navegador: no aparece ningún warning de hidratación al recargar /carrito con items persistidos.
 
-### BUG de imágenes (viene de la Fase 3, no del carrito) — parcialmente resuelto
-- Síntoma: las imágenes devuelven 400 del optimizador: `"url" parameter is valid but image type is not allowed`
-- Causa: placehold.co sirve SVG por defecto, y Next bloquea SVG en next/image (dangerouslyAllowSVG es false por defecto). No es un problema de remotePatterns: la URL pasa la validación de host.
+### BUG de imágenes (viene de la Fase 3, no del carrito) — RESUELTO
+- Síntoma: las imágenes devolvían 400 del optimizador: `"url" parameter is valid but image type is not allowed`
+- Causa: placehold.co sirve SVG por defecto, y Next bloquea SVG en next/image (dangerouslyAllowSVG es false por defecto). No era un problema de remotePatterns: la URL pasaba la validación de host.
 - Fix: agregar `.png` a las URLs de placeholder.
-- RESUELTO en HERO_IMAGES (app/(shop)/page.js): verificado 200 / image/png en w=640, 750 y 1080.
-- PENDIENTE en las filas de product_images de la base (datos seed): las fotos de producto siguen dando 400 en home, categoría, producto y carrito. Se resuelve con un UPDATE sobre image_url, o solo cuando se carguen las fotos reales desde Supabase Storage (que ya vienen en JPG/PNG y no tienen este problema).
+- Resuelto en HERO_IMAGES (app/(shop)/page.js) y en las filas de product_images de la base (datos seed). Verificado 200 / image/png contra el optimizador en ambos casos.
 
 ## Fase 6 — Checkout: WhatsApp + guardado de orden
 - Server Action createOrder en lib/actions/orders.js: valida, calcula total, inserta orders + order_items, hace rollback manual si falla el segundo insert
@@ -111,3 +110,20 @@
 - En edición se usa updateCategory.bind(null, id) del lado servidor, así CategoryForm siempre invoca action(formData) sin conocer el id.
 - moveCategory depende de que los display_order sean distintos entre sí. Hoy son 1,2,3. Si en algún momento quedan valores repetidos (por ejemplo varias filas en 0), el swap no tiene efecto visible.
 - Borrar una categoría NO borra su imagen del bucket: queda huérfana en Storage. No es urgente (el bucket es chico) pero conviene limpiarlo en alguna fase futura.
+
+## Fase 9 — CRUD de productos (admin)
+- lib/actions/products.js: createProduct, updateProduct (con reconciliación de variantes: update/insert/soft-delete a stock=0 si la variante ya tiene pedidos), deleteProduct (bloqueado por FK si hay pedidos), toggleProductPublished
+- VariantManager: componente controlado para agregar/quitar filas de talle/color/stock
+- ProductImagesManager: componente controlado para múltiples imágenes con reordenar y borrar
+- ProductForm: junta todo, mismo patrón de FormData manual que CategoryForm
+- Páginas: listado, crear, editar
+- Con esto se completa el admin funcional: categorías + productos + login. Falta la Fase 10 (gestión de pedidos) para cerrar el ciclo completo
+
+### Notas técnicas de la Fase 9
+- Reconciliación de variantes en updateProduct: los DELETE se hacen UNO POR UNO, no en lote. Un delete en lote falla entero si una sola variante está referenciada por un pedido, y se perderían los borrados del resto. Cada delete individual atrapa el código 23503 y, en ese caso, hace UPDATE stock = 0 en vez de borrar.
+- Verificado contra la base que el borrado de una variante con order_items devuelve exactamente 23503 (order_items_product_variant_id_fkey), que es lo que el catch busca.
+- deleteProduct borra los archivos de Storage DESPUÉS de que el delete del producto salió bien, no antes. Si se borraran primero y el delete fallara por FK (producto con pedidos), quedaría un producto vivo sin fotos: pérdida de datos irreversible. Las rutas se leen antes del delete porque product_images cae por cascade.
+- createProduct hace rollback del producto si falla la subida de imágenes o el insert de variantes, para no dejar productos a medio crear (mismo criterio que el rollback de orders en Fase 6).
+- El input file de ProductImagesManager NO tiene atributo name: los File se appendean a mano desde el estado. Si tuviera name, el form mandaría también los archivos que el usuario ya sacó del preview.
+- LIMITACIÓN CONOCIDA: product_variants tiene unique (product_id, size, color). Si una variante quedó en stock 0 por el soft-delete y después se agrega otra con el mismo talle/color, el insert choca contra ese unique y la operación falla con el mensaje genérico. Lo mismo si se cargan dos filas idénticas en el mismo formulario.
+- Deuda menor: buildUniqueSlug está duplicado en categories.js y products.js (cada uno consulta su propia tabla). Conviene extraerlo a un módulo plano — no puede vivir en un archivo "use server", porque ahí todos los exports tienen que ser funciones async.
