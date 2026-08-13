@@ -179,3 +179,19 @@
 - El hero pasó de aspect-ratio a alto fijo (52vh mobile / 65vh desktop) y en mobile muestra 2 fotos en grid-cols-2, porque antes la tercera quedaba oculta dejando una columna vacía.
 - Eyebrow usa caramel también sobre el fondo ink del footer: da 5.26:1 de contraste, así que pasa AA y no hizo falta una variante clara.
 - El botón de WhatsApp del footer no se renderiza si falta NEXT_PUBLIC_WHATSAPP_NUMBER, para no linkear a wa.me/undefined.
+
+## Fase 11.5 — Logo tipográfico real, categorías compactas, breadcrumb unificado, hero carrusel
+- Logo del header: texto real con fuente Permanent Marker (no imagen), evita el problema de baja resolución de la Fase 11
+- Grilla de categorías: 2 columnas en mobile (antes 1), cards más compactas
+- Eliminadas las flechas de texto sueltas en "Categorías" y "Ver catálogo"
+- Breadcrumb de categoría finalmente migrado a components/Breadcrumb.jsx (deuda pendiente desde la Fase 4)
+- HeroCarousel: carrusel automático con puntitos, pausa al hover, reemplaza el mosaico estático de 3 fotos fijas
+- Más espacio entre hero y "Quiénes somos"
+- Pendiente: sumar más fotos al array de HERO_IMAGES cuando la dueña las confirme (hoy son 3, el carrusel soporta más sin cambios de código)
+
+### Notas técnicas de la Fase 11.5
+- La variable de next/font para Permanent Marker se llama --font-permanent-marker, NO --font-marker: el token de Tailwind ya se llama --font-marker, y si compartieran nombre la referencia en globals.css quedaría circular. Mismo criterio que las otras tres fuentes.
+- BUG encontrado y corregido en HeroCarousel: pausa por hover y pausa por click en un puntito compartían un solo booleano isPaused. Si el timer de "retomar tras click" (6s) vencía mientras el mouse seguía encima, forzaba isPaused(false) e ignoraba el hover en curso; y al revés, sacar el mouse cancelaba de golpe la gracia post-click. Se separó en isHovering + isClickPaused, con isPaused derivado como el OR de ambos.
+- Verificación del hover: dispatchEvent con MouseEvent('mouseover'/'mouseenter') sintético NO dispara el handler de React 19 de forma confiable en este entorno de pruebas. La verificación real se hizo invocando directamente props.onMouseEnter/onMouseLeave leídos del fiber de React (element[key que empieza con __reactProps$]), que sí ejercita la lógica real del componente sin la ambigüedad del sistema de eventos sintéticos.
+- grep confirmó cero apariciones de "→" como texto literal en app/ y components/, y que el componente Arrow (components/ui/Arrow.jsx) solo se usa en Header.jsx. Los otros matches de "Arrow" en el proyecto son ArrowUp/ArrowDown de lucide-react (iconos de reordenar en el admin), un componente distinto.
+- Tanto categoria/[slug]/page.js como producto/[slug]/page.js importan components/Breadcrumb.jsx: no queda ninguna implementación de breadcrumb armada a mano.

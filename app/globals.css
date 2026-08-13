@@ -14,6 +14,7 @@
   --font-display: var(--font-cormorant);
   --font-body: var(--font-work-sans);
   --font-accent: var(--font-caveat);
+  --font-marker: var(--font-permanent-marker);
 }
 
 body {

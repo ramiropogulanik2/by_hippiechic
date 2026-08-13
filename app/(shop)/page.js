@@ -1,8 +1,10 @@
-import Image from "next/image";
 import AboutSection from "@/components/AboutSection";
 import CategoryCard from "@/components/CategoryCard";
+import HeroCarousel from "@/components/HeroCarousel";
 import { createClient } from "@/lib/supabase/server";
 
+// Agregar más rutas acá cuando la dueña confirme más fotos: el carrusel
+// no necesita ningún cambio de código para soportarlas.
 const HERO_IMAGES = ["/hero-1.jpg", "/hero-2.jpg", "/hero-3.jpg"];
 
 export default async function HomePage() {
@@ -23,45 +25,34 @@ export default async function HomePage() {
   return (
     <>
       {/* ---------- Hero ---------- */}
-      <section className="relative">
-        {/* Alto acotado en vez de aspect-ratio: así el hero no empuja el resto
-            de la página fuera de pantalla y se asoma la sección siguiente.
-            En mobile van 2 fotos (grid-cols-2) para que no quede un hueco. */}
-        <div className="grid h-[52vh] grid-cols-2 sm:h-[65vh] sm:grid-cols-3">
-          {HERO_IMAGES.map((src, i) => (
-            <div
-              key={src}
-              className={`relative h-full ${i === 2 ? "hidden sm:block" : ""}`}
-            >
-              <Image
-                src={src}
-                alt=""
-                fill
-                sizes="(min-width: 640px) 33vw, 50vw"
-                className="object-cover"
-                priority={i === 0}
-              />
-            </div>
-          ))}
-        </div>
+      <section className="relative h-[52vh] sm:h-[65vh]">
+        <HeroCarousel images={HERO_IMAGES} />
 
-        <div className="absolute inset-0 bg-ink/30" />
+        {/* El contenido superpuesto es fijo, independiente de qué imagen
+            del carrusel esté activa. pointer-events-none deja pasar los
+            clicks a los puntitos del carrusel, salvo en el botón. */}
+        <div className="pointer-events-none absolute inset-0 bg-ink/30" />
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 px-4 text-center">
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-6 px-4 text-center">
           <p className="font-accent text-3xl text-sand drop-shadow-sm sm:text-5xl">
             Boho-chic · Envíos a todo el país
           </p>
           <a
             href="#categorias"
-            className="rounded-full bg-sand px-6 py-3 font-body text-sm font-medium text-ink transition-colors hover:bg-card"
+            className="pointer-events-auto rounded-full bg-sand px-6 py-3 font-body text-sm font-medium text-ink transition-colors hover:bg-card"
           >
-            Ver catálogo →
+            Ver catálogo
           </a>
         </div>
       </section>
 
       {/* ---------- Quiénes somos ---------- */}
-      <AboutSection />
+      {/* Solo padding-top: AboutSection ya trae su propio py-16/py-24 en las
+          dos direcciones, así que agregar py acá duplicaría el espacio hacia
+          la sección de categorías, que también tiene su padding propio. */}
+      <div className="pt-12 sm:pt-16">
+        <AboutSection />
+      </div>
 
       {/* ---------- Categorías ---------- */}
       <section
@@ -69,7 +60,7 @@ export default async function HomePage() {
         className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24"
       >
         <h2 className="mb-10 font-display text-3xl font-semibold sm:text-4xl">
-          → Categorías
+          Categorías
         </h2>
 
         {categoryList.length === 0 ? (
@@ -77,7 +68,7 @@ export default async function HomePage() {
             Todavía no hay categorías cargadas
           </p>
         ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3">
             {categoryList.map((category) => (
               <CategoryCard
                 key={category.id}

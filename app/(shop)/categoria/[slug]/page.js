@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import Arrow from "@/components/ui/Arrow";
+import Breadcrumb from "@/components/Breadcrumb";
 import ProductCard from "@/components/ProductCard";
 import { createClient } from "@/lib/supabase/server";
 
@@ -56,16 +55,11 @@ export default async function CategoryPage({ params }) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-      <nav
-        aria-label="Migas de pan"
-        className="mb-8 flex items-center gap-3 text-sm"
-      >
-        <Link href="/" className="transition-colors hover:text-caramel">
-          Inicio
-        </Link>
-        <Arrow className="h-2 w-8 text-caramel" />
-        <span className="font-medium">{category.name}</span>
-      </nav>
+      <div className="mb-8">
+        <Breadcrumb
+          items={[{ label: "Inicio", href: "/" }, { label: category.name }]}
+        />
+      </div>
 
       <h1 className="mb-10 font-display text-3xl font-semibold sm:text-4xl">
         {category.name}
