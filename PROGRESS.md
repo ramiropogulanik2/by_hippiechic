@@ -161,3 +161,21 @@
 - El layout del admin lleva force-dynamic porque hace la query del contador de pendientes; sin eso el badge queda congelado en el valor del build.
 - OJO al testear Server Actions: revalidatePath NO se puede llamar durante el render de un Server Component ("used revalidatePath during render which is unsupported"). Un arnés de prueba tiene que ser un Route Handler, no una page. Y como revalidatePath está al final de la función, las llamadas que fallan por esto igual ya escribieron en la base.
 - Las carpetas de app/ que empiezan con "_" son private folders y no generan ruta: no sirven para arneses temporales.
+
+## Fase 11 — Pulido visual: logo real, menos flechas, sección "Quiénes somos", CTA de WhatsApp
+- Header usa el logo real (public/hippiechic-logo.png) en vez del wordmark tipográfico
+- Breadcrumb usa "/" en vez del componente Arrow como separador
+- Nuevo componente Eyebrow (texto manuscrito Caveat, usado como etiqueta arriba de títulos de sección)
+- Nueva AboutSection en el home, entre hero y categorías, con copy placeholder pendiente de revisión con la dueña
+- Hero reducido en altura, con fotos reales (public/hero-*.jpg) en vez de placeholders
+- Footer con CTA "Para consultas" + botón de WhatsApp (mensaje genérico, reutiliza lib/whatsapp.js)
+- Pendiente: confirmar con la dueña el texto final de la sección "Quiénes somos" (años del negocio, tono de la bio)
+
+### Notas técnicas de la Fase 11
+- Los nombres de archivo reales difieren de los que asumía el plan: el logo es hippiechic-logo.png (no logo.png) y las fotos del hero están en la raíz de public/ (no en public/hero/). Se referencian con sus nombres reales, sin renombrar.
+- public/about.jpg.jpg tenía la extensión duplicada (error de guardado) y se renombró a about.jpg. Si se vuelve a subir desde el explorador de Windows, ojo con eso.
+- Esta versión de lucide-react NO exporta iconos de marca: el import de Instagram rompe el build. Se usa Users para "seguidoras". Verificado que sí existen Users, Truck, Calendar, MessageCircle, AtSign, Camera, Heart y Star.
+- El logo se renderiza con width/height reales (431x499) para que Next calcule el aspect ratio, y el tamaño visible lo fijan las clases (h-13 / sm:h-16 con w-auto). Verificado que sale 64x55, sin deformarse.
+- El hero pasó de aspect-ratio a alto fijo (52vh mobile / 65vh desktop) y en mobile muestra 2 fotos en grid-cols-2, porque antes la tercera quedaba oculta dejando una columna vacía.
+- Eyebrow usa caramel también sobre el fondo ink del footer: da 5.26:1 de contraste, así que pasa AA y no hizo falta una variante clara.
+- El botón de WhatsApp del footer no se renderiza si falta NEXT_PUBLIC_WHATSAPP_NUMBER, para no linkear a wa.me/undefined.

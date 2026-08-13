@@ -1,13 +1,16 @@
 import Link from "next/link";
-import Arrow from "@/components/ui/Arrow";
 
 export default function Breadcrumb({ items = [] }) {
   return (
     <nav aria-label="Migas de pan">
-      <ol className="flex flex-wrap items-center gap-3 text-sm">
+      <ol className="flex flex-wrap items-center text-sm">
         {items.map((item, index) => (
-          <li key={item.href ?? item.label} className="flex items-center gap-3">
-            {index > 0 && <Arrow className="h-2 w-8 shrink-0 text-caramel" />}
+          <li key={item.href ?? item.label} className="flex items-center">
+            {index > 0 && (
+              <span aria-hidden="true" className="px-2 text-ink/40">
+                /
+              </span>
+            )}
 
             {item.href ? (
               <Link

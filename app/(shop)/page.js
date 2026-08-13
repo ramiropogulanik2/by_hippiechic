@@ -1,14 +1,9 @@
 import Image from "next/image";
+import AboutSection from "@/components/AboutSection";
 import CategoryCard from "@/components/CategoryCard";
 import { createClient } from "@/lib/supabase/server";
 
-// El .png es necesario: placehold.co sirve SVG por defecto y next/image lo
-// rechaza con 400 (dangerouslyAllowSVG viene en false).
-const HERO_IMAGES = [
-  "https://placehold.co/600x800/B08D57/FFFCF7.png?text=Foto",
-  "https://placehold.co/600x800/B08D57/FFFCF7.png?text=Foto",
-  "https://placehold.co/600x800/B08D57/FFFCF7.png?text=Foto",
-];
+const HERO_IMAGES = ["/hero-1.jpg", "/hero-2.jpg", "/hero-3.jpg"];
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -29,13 +24,14 @@ export default async function HomePage() {
     <>
       {/* ---------- Hero ---------- */}
       <section className="relative">
-        <div className="grid grid-cols-3">
+        {/* Alto acotado en vez de aspect-ratio: así el hero no empuja el resto
+            de la página fuera de pantalla y se asoma la sección siguiente.
+            En mobile van 2 fotos (grid-cols-2) para que no quede un hueco. */}
+        <div className="grid h-[52vh] grid-cols-2 sm:h-[65vh] sm:grid-cols-3">
           {HERO_IMAGES.map((src, i) => (
             <div
-              key={i}
-              className={`relative aspect-[3/4] ${
-                i === 2 ? "hidden sm:block" : ""
-              }`}
+              key={src}
+              className={`relative h-full ${i === 2 ? "hidden sm:block" : ""}`}
             >
               <Image
                 src={src}
@@ -63,6 +59,9 @@ export default async function HomePage() {
           </a>
         </div>
       </section>
+
+      {/* ---------- Quiénes somos ---------- */}
+      <AboutSection />
 
       {/* ---------- Categorías ---------- */}
       <section
