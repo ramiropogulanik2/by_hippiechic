@@ -42,6 +42,9 @@ export async function proxy(request) {
   if (isAdminRoute && !isLoginRoute && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
+    // Sin esto el redirect arrastra el query de la ruta original
+    // (ej: /admin/login?estado=pendiente), que el login ignora.
+    url.search = "";
     return NextResponse.redirect(url);
   }
 

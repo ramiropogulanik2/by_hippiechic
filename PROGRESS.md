@@ -144,3 +144,20 @@
 - Pasar de manual a guiado con datos incompatibles NO borra nada: solo muestra una advertencia. Las variantes se reemplazan recién cuando se elige un talle o color en la grilla.
 - Estado del catálogo al momento de esta fase: en modo GUIADO quedan Blazer camel, Blusa seda negra, Cartera cruzada cuero, Pantalón palazzo terracota y Vestido gasa floral. En MANUAL quedan aestetic, todo menos media y Vestido, los tres por datos de prueba con talles tipo "sdij, dsiad, dsn" o "S, M, L, K" en un solo campo.
 - .claude/launch.json tiene autoPort: true porque Next 16 se niega a levantar un segundo dev server sobre el mismo directorio y el puerto 3000 queda tomado por procesos huérfanos.
+
+## Fase 10 — Gestión de pedidos (admin)
+- lib/actions/orders.js: agregada updateOrderStatus, con ajuste de stock según la transición (descuenta al confirmar, devuelve si se revierte una confirmación, sin tocar stock en pendiente→rechazado)
+- Badge de pedidos pendientes en el nav del admin
+- Listado de pedidos con filtro por estado (tabs)
+- Detalle de pedido: items, totales, acciones de confirmar/rechazar/revertir, link directo a WhatsApp de la clienta si dejó teléfono
+- Con esto se completa el ciclo funcional completo: catálogo público → carrito → WhatsApp + orden guardada → admin puede ver, confirmar/rechazar, y el stock se ajusta solo
+- Pendiente (fuera del alcance de este roadmap original): pulido visual final y deploy a Vercel
+
+### Notas técnicas de la Fase 10
+- El ajuste de stock se calcula en JS (leer stock actual -> Math.max(stock - qty, 0) o stock + qty -> update), no con una expresión SQL tipo greatest(): el cliente JS de Supabase no permite expresiones crudas en update.
+- Antes de tocar la base se agrupan las cantidades por product_variant_id. Si una misma variante apareciera en dos líneas del pedido, dos updates seguidos se pisarían entre sí y solo se aplicaría el último.
+- Los updates de stock son best-effort: un fallo puntual se loguea y sigue, para que el estado del pedido igual quede como decidió la dueña.
+- Verificado end-to-end contra la Server Action real (arnés temporal, borrado después): confirmar descuenta (3->1), revertir devuelve (1->3), pendiente→rechazado no toca nada (3->3), y confirmar una cantidad mayor al stock lo deja en 0 sin pasar a negativo. La base quedó en 0 órdenes y stock total 81, idéntico al estado previo.
+- El layout del admin lleva force-dynamic porque hace la query del contador de pendientes; sin eso el badge queda congelado en el valor del build.
+- OJO al testear Server Actions: revalidatePath NO se puede llamar durante el render de un Server Component ("used revalidatePath during render which is unsupported"). Un arnés de prueba tiene que ser un Route Handler, no una page. Y como revalidatePath está al final de la función, las llamadas que fallan por esto igual ya escribieron en la base.
+- Las carpetas de app/ que empiezan con "_" son private folders y no generan ruta: no sirven para arneses temporales.
