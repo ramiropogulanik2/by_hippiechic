@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import QuantityStepper from "@/components/ui/QuantityStepper";
+import { findPaletteColor } from "@/lib/colorPalette";
 import { useCartStore } from "@/lib/store/cartStore";
 
 function uniqueValues(variants, key) {
@@ -17,18 +18,27 @@ function uniqueValues(variants, key) {
   return values;
 }
 
-function Pill({ label, isSelected, onClick }) {
+function Pill({ label, isSelected, onClick, swatchHex = null }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={isSelected}
-      className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
+      className={`flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm transition-colors ${
         isSelected
           ? "border-caramel bg-caramel text-sand"
           : "border-ink/20 text-ink hover:border-ink/40"
       }`}
     >
+      {/* Solo si el color existe en la paleta; los cargados a mano que no
+          coinciden siguen mostrándose como texto pelado. */}
+      {swatchHex && (
+        <span
+          aria-hidden="true"
+          style={{ backgroundColor: swatchHex }}
+          className="h-3.5 w-3.5 shrink-0 rounded-full border border-ink/20"
+        />
+      )}
       {label}
     </button>
   );
@@ -126,6 +136,7 @@ export default function ProductVariantSelector({
                 label={color}
                 isSelected={color === selectedColor}
                 onClick={() => setSelectedColor(color)}
+                swatchHex={findPaletteColor(color)?.hex ?? null}
               />
             ))}
           </div>

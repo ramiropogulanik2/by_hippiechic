@@ -127,3 +127,20 @@
 - El input file de ProductImagesManager NO tiene atributo name: los File se appendean a mano desde el estado. Si tuviera name, el form mandaría también los archivos que el usuario ya sacó del preview.
 - LIMITACIÓN CONOCIDA: product_variants tiene unique (product_id, size, color). Si una variante quedó en stock 0 por el soft-delete y después se agrega otra con el mismo talle/color, el insert choca contra ese unique y la operación falla con el mensaje genérico. Lo mismo si se cargan dos filas idénticas en el mismo formulario.
 - Deuda menor: buildUniqueSlug está duplicado en categories.js y products.js (cada uno consulta su propia tabla). Conviene extraerlo a un módulo plano — no puede vivir en un archivo "use server", porque ahí todos los exports tienen que ser funciones async.
+
+## Fase 9.5 — Selector guiado de talles y colores
+- lib/colorPalette.js: paleta de 11 colores con hex, compartida entre admin y catálogo público
+- lib/sizePresets.js: presets de talles (letra, numérico) + detección de compatibilidad + generador de matriz
+- SizeTypeSelector + ColorGridPicker: selección guiada por pills/swatches en vez de texto libre
+- VariantMatrixBuilder: wrapper con modo guiado (default) y modo manual (VariantManager original, sin cambios) como escape hatch
+- ProductVariantSelector del catálogo público ahora muestra un swatch de color cuando el nombre coincide con la paleta
+- Sin cambios en lib/actions/products.js — el formato de variants_json es idéntico, esto fue una mejora exclusivamente de interfaz
+- Decisión de diseño: se mantiene el schema flexible (size/color como texto libre en la base), la guía es solo a nivel UI — consistente con la decisión original del proyecto de no usar ENUMs rígidos
+
+### Notas técnicas de la Fase 9.5
+- La detección de compatibilidad corre UNA sola vez al montar (useState con initializer), no en cada render: si no, cada tecleo de stock recalcularía el modo.
+- detectMatrixMode rechaza los casos donde algunas filas tienen talle y otras no (o algunas color y otras no): la grilla es siempre un producto cartesiano completo y no puede representar esa mezcla.
+- generateVariantMatrix conserva id y stock de las combinaciones que ya existían. Verificado contra los datos reales: al regenerar, las 6 filas de "Vestido gasa floral" mantuvieron sus ids y sus stocks (4/4/4/4/4/0).
+- Pasar de manual a guiado con datos incompatibles NO borra nada: solo muestra una advertencia. Las variantes se reemplazan recién cuando se elige un talle o color en la grilla.
+- Estado del catálogo al momento de esta fase: en modo GUIADO quedan Blazer camel, Blusa seda negra, Cartera cruzada cuero, Pantalón palazzo terracota y Vestido gasa floral. En MANUAL quedan aestetic, todo menos media y Vestido, los tres por datos de prueba con talles tipo "sdij, dsiad, dsn" o "S, M, L, K" en un solo campo.
+- .claude/launch.json tiene autoPort: true porque Next 16 se niega a levantar un segundo dev server sobre el mismo directorio y el puerto 3000 queda tomado por procesos huérfanos.

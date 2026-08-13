@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ProductImagesManager from "@/components/admin/ProductImagesManager";
-import VariantManager from "@/components/admin/VariantManager";
+import VariantMatrixBuilder from "@/components/admin/VariantMatrixBuilder";
 
 const inputClass =
   "w-full rounded-sm border border-ink/20 bg-card px-3 py-2 font-body text-sm text-ink placeholder:text-ink/40 focus:border-caramel focus:outline-none";
@@ -153,7 +153,7 @@ export default function ProductForm({
         onChange={setImages}
       />
 
-      <VariantManager variants={variants} onChange={setVariants} />
+      <VariantMatrixBuilder variants={variants} onChange={setVariants} />
 
       {errorMessage && <p className="text-sm text-rose">{errorMessage}</p>}
 
