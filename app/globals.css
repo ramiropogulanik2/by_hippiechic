@@ -21,3 +21,15 @@ body {
   background-color: var(--color-sand);
   color: var(--color-ink);
 }
+
+/* Marquee del hero (components/HeroCarousel.jsx). El track duplica las
+   fotos, así que mover -50% del ancho propio del track = el ancho de un
+   set completo: el loop no salta. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

@@ -25,26 +25,27 @@ export default async function HomePage() {
   return (
     <>
       {/* ---------- Hero ---------- */}
-      <section className="relative h-[52vh] sm:h-[65vh]">
-        <HeroCarousel images={HERO_IMAGES} />
-
-        {/* El contenido superpuesto es fijo, independiente de qué imagen
-            del carrusel esté activa. pointer-events-none deja pasar los
-            clicks a los puntitos del carrusel, salvo en el botón. */}
-        <div className="pointer-events-none absolute inset-0 bg-ink/30" />
-
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-6 px-4 text-center">
-          <p className="font-accent text-3xl text-sand drop-shadow-sm sm:text-5xl">
-            Boho-chic · Envíos a todo el país
-          </p>
-          <a
-            href="#categorias"
-            className="pointer-events-auto rounded-full bg-sand px-6 py-3 font-body text-sm font-medium text-ink transition-colors hover:bg-card"
-          >
-            Ver catálogo
-          </a>
-        </div>
+      {/* Texto y CTA en su propio bloque, ya no superpuestos sobre las fotos:
+          separados así el marquee no necesita overlay oscuro para que el
+          texto se lea, y el bloque de texto puede vivir centrado en el
+          contenedor con max-width normal del resto del sitio. */}
+      <section className="bg-sand px-4 py-14 text-center sm:py-20">
+        <p className="font-accent text-3xl text-ink sm:text-5xl">
+          Boho-chic · Envíos a todo el país
+        </p>
+        <a
+          href="#categorias"
+          className="mt-6 inline-block rounded-full bg-ink px-6 py-3 font-body text-sm font-medium text-sand transition-opacity hover:opacity-90"
+        >
+          Ver catálogo
+        </a>
       </section>
+
+      {/* Full-bleed: <main> no tiene max-width propio (solo lo tienen las
+          secciones que lo piden explícitamente), así que esto ya llega
+          borde a borde sin necesitar el truco de "romper" un contenedor
+          centrado. */}
+      <HeroCarousel images={HERO_IMAGES} />
 
       {/* ---------- Quiénes somos ---------- */}
       {/* Solo padding-top: AboutSection ya trae su propio py-16/py-24 en las

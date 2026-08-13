@@ -195,3 +195,16 @@
 - Verificación del hover: dispatchEvent con MouseEvent('mouseover'/'mouseenter') sintético NO dispara el handler de React 19 de forma confiable en este entorno de pruebas. La verificación real se hizo invocando directamente props.onMouseEnter/onMouseLeave leídos del fiber de React (element[key que empieza con __reactProps$]), que sí ejercita la lógica real del componente sin la ambigüedad del sistema de eventos sintéticos.
 - grep confirmó cero apariciones de "→" como texto literal en app/ y components/, y que el componente Arrow (components/ui/Arrow.jsx) solo se usa en Header.jsx. Los otros matches de "Arrow" en el proyecto son ArrowUp/ArrowDown de lucide-react (iconos de reordenar en el admin), un componente distinto.
 - Tanto categoria/[slug]/page.js como producto/[slug]/page.js importan components/Breadcrumb.jsx: no queda ninguna implementación de breadcrumb armada a mano.
+
+## Fase 11.6 — Hero rehecho como marquee deslizante
+- HeroCarousel reescrito de cero: de slideshow con dots/fade (JS + estado) a marquee CSS puro (sin JavaScript, sin estado, sin los bugs de timers de la versión anterior)
+- Texto/CTA del hero separados en su propio bloque arriba, ya no superpuestos sobre las fotos
+- Tira de fotos full-bleed (borde a borde de la pantalla), sin gap entre imágenes, sin bordes redondeados
+- Desktop: 3 fotos visibles simultáneamente. Mobile: 1 foto + adelanto de la siguiente
+- Loop infinito vía animación CSS (translateX sobre contenido duplicado), pausa al hover
+
+### Notas técnicas de la Fase 11.6
+- El track necesita width:max-content (clase w-max) además de flex. Sin eso, un div flex block-level toma por defecto el ancho del contenedor padre (no el de la suma de sus hijos), así que translateX(-50%) se calcularía sobre el ancho equivocado (el del viewport, no el de la tira completa) y el loop se rompería. Verificado midiendo en el navegador: track = 2560px (exactamente 2x el ancho de 3 imágenes al 33.33vw en un viewport de ~1280px), wrapper = 1265px.
+- El pause por hover quedó resuelto 100% en CSS (group-hover:[animation-play-state:paused]), sin JS. Verificado extrayendo la regla compilada real del CSS servido: `.group-hover\:[animation-play-state\:paused]:is(:where(.group):hover *) { animation-play-state: paused; }`.
+- aspect-[3/4] con corchetes, no aspect-3/4: coincide con la convención ya usada en el resto del proyecto (ProductCard, CategoryCard, ProductGallery).
+- Velocidad calculada a partir de los números reales: track de 2560px, se mueve -50% (1280px) en 40s = 32px/s. Cada imagen mide ~427px de ancho, así que tarda ~13.3s en pasar completa. Los 40s quedaron como estaban en el pedido original; es un solo número en animate-[marquee_40s_linear_infinite] si hay que ajustarlo.
