@@ -5,7 +5,15 @@ import { createClient } from "@/lib/supabase/server";
 
 // Agregar más rutas acá cuando la dueña confirme más fotos: el carrusel
 // no necesita ningún cambio de código para soportarlas.
-const HERO_IMAGES = ["/hero-1.jpg", "/hero-2.jpg", "/hero-3.jpg"];
+const HERO_IMAGES = [
+  "/hero-1.jpg",
+  "/hero-2.jpg",
+  "/hero-3.jpg",
+  "/hero-4.jpg",
+  "/hero-5.jpg",
+  "/hero-6.jpg",
+  "/hero-7.jpg",
+];
 
 export default async function HomePage() {
   const supabase = await createClient();
