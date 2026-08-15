@@ -1,6 +1,8 @@
 import AboutSection from "@/components/AboutSection";
 import CategoryCard from "@/components/CategoryCard";
 import HeroCarousel from "@/components/HeroCarousel";
+import BotanicalAccent from "@/components/ui/BotanicalAccent";
+import Eyebrow from "@/components/ui/Eyebrow";
 import { createClient } from "@/lib/supabase/server";
 
 // Agregar más rutas acá cuando la dueña confirme más fotos: el carrusel
@@ -64,39 +66,45 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ---------- Quiénes somos ---------- */}
-      {/* Solo padding-top: AboutSection ya trae su propio py-16/py-24 en las
-          dos direcciones, así que agregar py acá duplicaría el espacio hacia
-          la sección de categorías, que también tiene su padding propio. */}
-      <div className="pt-12 sm:pt-16">
-        <AboutSection />
-      </div>
+      {/* ---------- Quiénes somos (fondo "card") ---------- */}
+      {/* Ya no lleva wrapper con padding: el cambio de tono a "card" es lo
+          que separa esta sección del hero, y AboutSection trae su propio
+          py-16/py-24. */}
+      <AboutSection />
 
-      {/* ---------- Categorías ---------- */}
+      {/* ---------- Categorías (vuelve a "sand") ---------- */}
       <section
         id="categorias"
-        className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-24"
+        className="relative scroll-mt-20 overflow-hidden bg-sand"
       >
-        <h2 className="mb-10 font-display text-3xl font-semibold sm:text-4xl">
-          Categorías
-        </h2>
+        {/* Espejado con -scale-x-100 para que la rama se incline hacia
+            afuera del contenido, no hacia el título. */}
+        <BotanicalAccent className="pointer-events-none absolute top-0 right-0 hidden h-64 w-auto translate-x-1/4 -scale-x-100 text-caramel opacity-10 sm:block" />
 
-        {categoryList.length === 0 ? (
-          <p className="py-12 text-center font-accent text-2xl text-ink/60">
-            Todavía no hay categorías cargadas
-          </p>
-        ) : (
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3">
-            {categoryList.map((category) => (
-              <CategoryCard
-                key={category.id}
-                name={category.name}
-                slug={category.slug}
-                imageUrl={category.image_url}
-              />
-            ))}
-          </div>
-        )}
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+          <Eyebrow>Nuestro catálogo</Eyebrow>
+
+          <h2 className="mb-10 font-display text-3xl font-semibold sm:text-4xl">
+            Categorías
+          </h2>
+
+          {categoryList.length === 0 ? (
+            <p className="py-12 text-center font-accent text-2xl text-ink/60">
+              Todavía no hay categorías cargadas
+            </p>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 xl:grid-cols-4">
+              {categoryList.map((category) => (
+                <CategoryCard
+                  key={category.id}
+                  name={category.name}
+                  slug={category.slug}
+                  imageUrl={category.image_url}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </section>
     </>
   );

@@ -66,7 +66,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
       <Link href="/" className="text-sm transition-colors hover:text-caramel">
         ← Seguir comprando
       </Link>
@@ -94,69 +94,77 @@ export default function CartPage() {
           </Link>
         </div>
       ) : (
-        <>
+        // Dos columnas en lg+: con el contenedor ya en max-w-7xl, una sola
+        // columna dejaría las líneas del pedido estiradas de punta a punta.
+        // El panel de la derecha queda sticky para que el total y el botón
+        // sigan a la vista al scrollear una lista larga.
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-14">
           <ul className="border-t border-ink/10">
             {items.map((item) => (
               <CartLineItem key={item.variantId} item={item} />
             ))}
           </ul>
 
-          <div className="mt-8 flex items-baseline justify-between">
-            <span className="font-body text-sm font-medium">Total</span>
-            <span className="font-display text-3xl font-semibold sm:text-4xl">
-              {formatPrice(total)}
-            </span>
-          </div>
-
-          <div className="mt-10 flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="customer-name" className="text-sm font-medium">
-                Nombre
-              </label>
-              <input
-                id="customer-name"
-                type="text"
-                value={customerName}
-                onChange={(event) => setCustomerName(event.target.value)}
-                placeholder="Tu nombre"
-                className={inputClass}
-              />
+          <aside className="flex flex-col rounded-sm border border-ink/10 bg-card p-6 lg:sticky lg:top-28 lg:self-start">
+            <div className="flex items-baseline justify-between">
+              <span className="font-body text-sm font-medium">Total</span>
+              <span className="font-display text-3xl font-semibold">
+                {formatPrice(total)}
+              </span>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="customer-phone" className="text-sm font-medium">
-                Teléfono (opcional)
-              </label>
-              <input
-                id="customer-phone"
-                type="tel"
-                value={customerPhone}
-                onChange={(event) => setCustomerPhone(event.target.value)}
-                placeholder="Opcional"
-                className={inputClass}
-              />
+            <div className="mt-8 flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="customer-name" className="text-sm font-medium">
+                  Nombre
+                </label>
+                <input
+                  id="customer-name"
+                  type="text"
+                  value={customerName}
+                  onChange={(event) => setCustomerName(event.target.value)}
+                  placeholder="Tu nombre"
+                  className={inputClass}
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="customer-phone" className="text-sm font-medium">
+                  Teléfono (opcional)
+                </label>
+                <input
+                  id="customer-phone"
+                  type="tel"
+                  value={customerPhone}
+                  onChange={(event) => setCustomerPhone(event.target.value)}
+                  placeholder="Opcional"
+                  className={inputClass}
+                />
+              </div>
             </div>
-          </div>
 
-          {errorMessage && (
-            <p className="mt-4 text-sm text-rose">{errorMessage}</p>
-          )}
+            {errorMessage && (
+              <p className="mt-4 text-sm text-rose">{errorMessage}</p>
+            )}
 
-          <button
-            type="button"
-            onClick={handleSubmitOrder}
-            disabled={isSubmitting}
-            className={`mt-6 w-full rounded-full bg-ink px-6 py-4 font-body text-sm font-medium text-sand transition-opacity ${
-              isSubmitting ? "cursor-not-allowed opacity-60" : "hover:opacity-90"
-            }`}
-          >
-            {isSubmitting ? "Enviando pedido..." : "Hacer pedido"}
-          </button>
+            <button
+              type="button"
+              onClick={handleSubmitOrder}
+              disabled={isSubmitting}
+              className={`mt-6 w-full rounded-full bg-ink px-6 py-4 font-body text-sm font-medium text-sand transition-opacity ${
+                isSubmitting
+                  ? "cursor-not-allowed opacity-60"
+                  : "hover:opacity-90"
+              }`}
+            >
+              {isSubmitting ? "Enviando pedido..." : "Hacer pedido"}
+            </button>
 
-          <p className="mt-3 text-center text-xs text-ink/60">
-            El pedido se confirma por WhatsApp
-          </p>
-        </>
+            <p className="mt-3 text-center text-xs text-ink/60">
+              El pedido se confirma por WhatsApp
+            </p>
+          </aside>
+        </div>
       )}
     </div>
   );

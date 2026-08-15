@@ -221,3 +221,20 @@
 - Verificación de que Embla se montó de verdad: el track (className="flex", sin ningún style en el JSX) apareció en el DOM con `style="transform: translate3d(0px, 0px, 0px);"`. Ese inline style es la firma propia del motor de Embla (lo pone él, no el componente), y confirma que se inicializó y está gestionando el track.
 - Limitación de verificación: no se pudo confirmar el gesto de arrastre en sí simulando PointerEvent sintéticos (dispatchEvent con pointerdown/move/up) — Embla no reaccionó a la secuencia simulada, la misma clase de limitación de entorno que ya había aparecido antes con eventos de hover de React. No es evidencia de un bug: Embla es la implementación canónica de la librería siguiendo su patrón documentado, sin código propio de por medio que pueda interferir. Falta la prueba manual real (mouse/touch) de que el arrastre se sienta bien.
 - Se eliminó el @keyframes marquee de app/globals.css (quedaba huérfano, sin nada que lo referenciara tras el cambio a Embla).
+
+## Fase 11.8 — Layout más ancho, acento botánico, ritmo de fondo entre secciones
+- Hero: vuelve a 1 foto + adelanto en mobile (w-[85vw], antes w-[46vw] mostraba 2), desktop sin cambios
+- Indicador de swipe en mobile: ChevronRight con rebote horizontal, se autooculta a los 4.5s
+- Contenedor principal ensanchado a max-w-7xl en las 4 páginas públicas (antes dejaba franjas vacías enormes en desktop)
+- Grillas de categoría/producto suman columna xl para aprovechar pantallas anchas
+- Nuevo componente BotanicalAccent (SVG de línea fina, inspirado en las flores secas de las fotos reales de la marca), usado como acento sutil en 2 lugares, sin librerías
+- Fondo alternado sand/card entre secciones del home para dar ritmo visual
+
+### Notas técnicas de la Fase 11.8
+- El viewBox del BotanicalAccent es "0 -20 120 180", no "0 0 120 160": las tres puntas de arriba del tallo se dibujan en Y negativo y con el viewBox original quedaban recortadas.
+- Los acentos van dentro de secciones con overflow-hidden y sangran hacia afuera con translate. Verificado que no generan scroll horizontal (document.scrollWidth === clientWidth).
+- El acento del About está abajo a la izquierda, no arriba: la columna de texto es más corta que la foto, así que ese es el único rincón realmente vacío. Con la posición original (top-0) se cruzaba con el eyebrow y el título.
+- Los fondos de sección son a sangre completa (section con el bg + div interno con mx-auto max-w-7xl). Si el bg fuera al mismo elemento que el max-w, el cambio de tono se cortaría en el ancho del contenedor en vez de ir borde a borde.
+- El carrito se reestructuró a dos columnas en lg+ (lista + panel sticky de total/formulario). Pasarlo de max-w-3xl a max-w-7xl en una sola columna habría dejado las líneas del pedido estiradas de punta a punta, peor que antes.
+- OJO al verificar en el navegador con el pane oculto: getComputedStyle devuelve valores viejos (el renderer está throttleado). El indicador de swipe parecía no ocultarse — leyendo el atributo class real se confirmó que sí. Misma trampa que ya apareció en las fases 11.5 y 9.5.
+- Para chequear si un acento tapa texto NO sirve comparar getBoundingClientRect de h2/p: son elementos de bloque y su caja ocupa todo el ancho aunque los glifos estén solo a la izquierda. Hay que medir con un Range sobre el contenido (range.selectNodeContents + getBoundingClientRect).

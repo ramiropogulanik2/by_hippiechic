@@ -21,3 +21,16 @@ body {
   background-color: var(--color-sand);
   color: var(--color-ink);
 }
+
+/* Pista de swipe del hero en mobile (components/HeroCarousel.jsx).
+   Un empujoncito horizontal corto: sugiere la dirección del gesto sin
+   competir con las fotos. */
+@keyframes swipe-hint {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(6px);
+  }
+}

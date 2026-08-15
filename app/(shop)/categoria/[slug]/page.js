@@ -54,7 +54,7 @@ export default async function CategoryPage({ params }) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
       <div className="mb-8">
         <Breadcrumb
           items={[{ label: "Inicio", href: "/" }, { label: category.name }]}
@@ -70,7 +70,7 @@ export default async function CategoryPage({ params }) {
           Todavía no hay productos en esta categoría
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {productList.map((product) => (
             <ProductCard
               key={product.id}
