@@ -208,3 +208,16 @@
 - El pause por hover quedó resuelto 100% en CSS (group-hover:[animation-play-state:paused]), sin JS. Verificado extrayendo la regla compilada real del CSS servido: `.group-hover\:[animation-play-state\:paused]:is(:where(.group):hover *) { animation-play-state: paused; }`.
 - aspect-[3/4] con corchetes, no aspect-3/4: coincide con la convención ya usada en el resto del proyecto (ProductCard, CategoryCard, ProductGallery).
 - Velocidad calculada a partir de los números reales: track de 2560px, se mueve -50% (1280px) en 40s = 32px/s. Cada imagen mide ~427px de ancho, así que tarda ~13.3s en pasar completa. Los 40s quedaron como estaban en el pedido original; es un solo número en animate-[marquee_40s_linear_infinite] si hay que ajustarlo.
+
+## Fase 11.7 — Hero con embla-carousel-react, texto superpuesto de nuevo
+- Se reemplazó el marquee CSS automático (Fase 11.6) por embla-carousel-react: maneja drag, touch, inercia y snap sin código propio
+- Texto/CTA del hero de vuelta superpuestos sobre las fotos, con velo bg-ink/30 para legibilidad
+- pointer-events-none en el overlay (excepto el botón), para no bloquear el arrastre de Embla
+- Decisión: para interacciones con física real (drag + inercia + snap), se prioriza una librería chica y madura en vez de reimplementar a mano — distinto del criterio general del proyecto de evitar dependencias para lógica simple
+- npm audit detectó una vulnerabilidad alta preexistente (nanoid, transitiva vía postcss de Tailwind/Next, no relacionada con Embla) y se resolvió con npm audit fix
+
+### Notas técnicas de la Fase 11.7
+- La sección del hero quedó SIN altura fija (ni h-[52vh] ni similar). Los slides de Embla definen su propia altura vía aspect-[3/4], y el overlay (absolute inset-0) toma esa altura del contenedor relative. Ponerle una altura fija que no coincida con la que da el aspect-ratio real dejaría un hueco vacío debajo de las fotos, con el texto centrado en ese hueco en vez de sobre las imágenes — es el error que casi se repite acá arrastrando el valor de la fase del marquee sin revisarlo.
+- Verificación de que Embla se montó de verdad: el track (className="flex", sin ningún style en el JSX) apareció en el DOM con `style="transform: translate3d(0px, 0px, 0px);"`. Ese inline style es la firma propia del motor de Embla (lo pone él, no el componente), y confirma que se inicializó y está gestionando el track.
+- Limitación de verificación: no se pudo confirmar el gesto de arrastre en sí simulando PointerEvent sintéticos (dispatchEvent con pointerdown/move/up) — Embla no reaccionó a la secuencia simulada, la misma clase de limitación de entorno que ya había aparecido antes con eventos de hover de React. No es evidencia de un bug: Embla es la implementación canónica de la librería siguiendo su patrón documentado, sin código propio de por medio que pueda interferir. Falta la prueba manual real (mouse/touch) de que el arrastre se sienta bien.
+- Se eliminó el @keyframes marquee de app/globals.css (quedaba huérfano, sin nada que lo referenciara tras el cambio a Embla).
