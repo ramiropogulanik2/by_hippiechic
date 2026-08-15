@@ -18,7 +18,7 @@ export default function Header() {
             className="h-2 w-6 text-caramel sm:h-3 sm:w-10"
           />
           <span className="whitespace-nowrap font-marker text-2xl leading-none text-ink sm:text-3xl">
-            Hippie &amp; Chic
+            HIPPIE &amp; CHIC
           </span>
           <Arrow
             direction="right"

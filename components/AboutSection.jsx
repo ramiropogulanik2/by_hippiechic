@@ -14,16 +14,9 @@ export default function AboutSection() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
       <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-14">
-        <div className="relative aspect-4/5 w-full overflow-hidden rounded-sm bg-caramel">
-          <Image
-            src="/about.jpg"
-            alt="Showroom de Hippie & Chic"
-            fill
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover"
-          />
-        </div>
-
+        {/* Texto primero en el markup: así queda arriba en mobile (apilado)
+            y a la izquierda en desktop (grid-cols-2), sin necesitar clases
+            order-* para desacoplar el orden visual del DOM. */}
         <div className="flex flex-col">
           <Eyebrow>Conocé la tienda</Eyebrow>
 
@@ -50,6 +43,16 @@ export default function AboutSection() {
               </li>
             ))}
           </ul>
+        </div>
+
+        <div className="relative aspect-4/5 w-full overflow-hidden rounded-sm bg-caramel">
+          <Image
+            src="/about.jpg"
+            alt="Showroom de Hippie & Chic"
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+          />
         </div>
       </div>
     </section>
