@@ -254,3 +254,21 @@
 - HeroUploadForm fuerza un remount de ImageUploadField (cambiando su key) después de subir una foto: el input file se resetea con form.reset(), pero eso no dispara el evento onChange que limpia el preview interno del componente, así que sin el remount la miniatura de la foto ya subida se quedaría pegada en la vista previa.
 - Verificación: npm run build sin errores, /admin/hero confirmado que redirige a /admin/login sin sesión (probado navegando directo a la URL). El click en los puntitos se probó invocando .click() sobre los botones reales vía JS y leyendo el atributo class resultante (el mismo motivo de siempre: con el pane no compositando, tanto los clicks de mouse simulados por el tool como los screenshots hacen timeout).
 - Pendiente de probar por la dueña, logueada: subir una foto nueva de verdad (upload a Storage + insert), reordenar con las flechas, y eliminar una foto (incluyendo que borre el archivo de Storage cuando corresponda). No hay credenciales de admin disponibles en este entorno para probarlo de punta a punta.
+
+## Fase 12.5 — Auditoría de seguridad del login admin
+
+Auditoría de 5 puntos sobre app/admin/login, proxy.js y los Server Actions de escritura, pedida explícitamente antes de tocar nada. 4 de 5 puntos ya estaban bien; se corrigió el quinto.
+
+- **Mensaje de error del login**: ya era genérico ("Email o contraseña incorrectos") sin distinguir usuario inexistente de contraseña incorrecta. Sin cambios.
+- **Service role key fuera del bundle del cliente**: confirmado por grep completo del repo — SUPABASE_SERVICE_ROLE_KEY solo vive en .env.local (sin prefijo NEXT_PUBLIC_) y en lib/supabase/admin.js; ninguno de los 21 archivos "use client" del proyecto la importa ni la referencia, directa o indirectamente. Sin cambios.
+- **proxy.js cubre /admin/\***: el matcher "/admin/:path\*" protege todas las rutas y subrutas de admin sin excepciones. Sin cambios.
+- **Cookies de sesión**: cero overrides manuales de httpOnly/secure/sameSite en todo el repo — se usan los defaults de @supabase/ssr tal cual. Sin cambios.
+- **Server Actions de escritura sin verificación de sesión propia** (el hallazgo real): las 13 acciones de escritura sensibles dependían 100% de que el proxy hubiera bloqueado el acceso a la *página* que las invoca. Pero en Next.js App Router una Server Action es su propio endpoint, no queda atada a la ruta desde la que se la llama — el matcher de rutas del proxy no la protege si se la invoca fuera de esa ruta. Corregido: se agregó lib/session.js (requireAdminSession(), usa supabase.auth.getUser() con el cliente atado a cookies, igual que hace proxy.js) y se lo llama al principio de cada acción sensible, devolviendo { success: false, error: "No autorizado" } sin sesión válida:
+  - lib/actions/categories.js: createCategory, updateCategory, deleteCategory, toggleCategoryVisibility, moveCategory
+  - lib/actions/products.js: createProduct, updateProduct, deleteProduct, toggleProductPublished
+  - lib/actions/heroImages.js: addHeroImage, removeHeroImage, moveHeroImage
+  - lib/actions/orders.js: updateOrderStatus (createOrder queda sin chequeo a propósito — es el checkout público de la clienta, no hay auth de clientas en este proyecto)
+
+### Notas técnicas de la Fase 12.5
+- requireAdminSession() usa getUser(), no getSession(): getUser() revalida el token contra el servidor de Supabase, getSession() confía en la cookie tal cual llegó sin validarla de nuevo. Mismo criterio que ya usa proxy.js.
+- Verificación: npm run build sin errores. No se probó el bypass real (armar a mano un POST con el id de una Server Action apuntando a una ruta pública) porque hubiera significado construir un exploit funcional contra el propio proyecto — el chequeo se validó por code review, comparando la lógica con la de proxy.js (ya probada en la Fase 6) y confirmando que el guard corta antes de cualquier llamada a createAdminClient() o al bucket de Storage.
