@@ -46,56 +46,64 @@ export default async function AdminCategoriesPage() {
           {categoryList.map((category, index) => (
             <li
               key={category.id}
-              className="flex flex-wrap items-center gap-4 rounded-sm border border-ink/10 bg-card p-4"
+              // Mismo criterio que en /admin/productos: columna en mobile,
+              // fila en sm+ (sm:contents disuelve los wrappers y reproduce la
+              // fila plana original). Evita que el nombre se comprima cuando
+              // no entra junto al badge + "Editar" + las acciones.
+              className="flex flex-col gap-3 rounded-sm border border-ink/10 bg-card p-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
             >
-              <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-sand">
-                {category.image_url ? (
-                  <Image
-                    src={category.image_url}
-                    alt=""
-                    fill
-                    sizes="64px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <ImageIcon
-                    className="h-5 w-5 text-ink/30"
-                    strokeWidth={1.5}
-                  />
-                )}
+              <div className="flex items-center gap-4 sm:contents">
+                <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-sand">
+                  {category.image_url ? (
+                    <Image
+                      src={category.image_url}
+                      alt=""
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <ImageIcon
+                      className="h-5 w-5 text-ink/30"
+                      strokeWidth={1.5}
+                    />
+                  )}
+                </div>
+
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <span className="font-body text-sm font-medium">
+                    {category.name}
+                  </span>
+                  <span className="font-mono text-xs text-ink/50">
+                    /{category.slug}
+                  </span>
+                </div>
               </div>
 
-              <div className="flex min-w-0 flex-1 flex-col gap-1">
-                <span className="font-body text-sm font-medium">
-                  {category.name}
+              <div className="flex flex-wrap items-center gap-3 sm:contents">
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-medium ${
+                    category.is_visible
+                      ? "bg-caramel/20 text-caramel"
+                      : "bg-ink/10 text-ink/50"
+                  }`}
+                >
+                  {category.is_visible ? "Visible" : "Oculta"}
                 </span>
-                <span className="font-mono text-xs text-ink/50">
-                  /{category.slug}
-                </span>
+
+                <Link
+                  href={`/admin/categorias/${category.id}`}
+                  className="text-sm underline-offset-4 transition-colors hover:text-caramel hover:underline"
+                >
+                  Editar
+                </Link>
+
+                <CategoryRowActions
+                  category={category}
+                  isFirst={index === 0}
+                  isLast={index === categoryList.length - 1}
+                />
               </div>
-
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-medium ${
-                  category.is_visible
-                    ? "bg-caramel/20 text-caramel"
-                    : "bg-ink/10 text-ink/50"
-                }`}
-              >
-                {category.is_visible ? "Visible" : "Oculta"}
-              </span>
-
-              <Link
-                href={`/admin/categorias/${category.id}`}
-                className="text-sm underline-offset-4 transition-colors hover:text-caramel hover:underline"
-              >
-                Editar
-              </Link>
-
-              <CategoryRowActions
-                category={category}
-                isFirst={index === 0}
-                isLast={index === categoryList.length - 1}
-              />
             </li>
           ))}
         </ul>

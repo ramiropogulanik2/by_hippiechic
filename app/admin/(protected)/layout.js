@@ -35,7 +35,13 @@ export default async function AdminLayout({ children }) {
             Hippie &amp; Chic — Admin
           </Link>
 
-          <nav className="flex items-center gap-5">
+          {/* max-w-full + overflow-x-auto: en mobile los 4 links + el badge no
+              entran en una fila (410px de contenido contra ~340px de
+              viewport). Sin esto el <nav> se estira más allá del contenedor y
+              estira TODA la página (scroll horizontal del sitio entero). Cada
+              link lleva shrink-0 para que sea el scroll el que absorba el
+              desborde, no que el texto se comprima. */}
+          <nav className="flex max-w-full items-center gap-5 overflow-x-auto">
             {NAV_LINKS.map((link) => {
               const showBadge =
                 link.href === "/admin/pedidos" && pendingCount > 0;
@@ -44,7 +50,7 @@ export default async function AdminLayout({ children }) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-1.5 font-body text-sm text-sand/80 transition-colors hover:text-sand"
+                  className="flex shrink-0 items-center gap-1.5 font-body text-sm text-sand/80 transition-colors hover:text-sand"
                 >
                   {link.label}
 
@@ -60,7 +66,9 @@ export default async function AdminLayout({ children }) {
               );
             })}
 
-            <LogoutButton />
+            <span className="shrink-0">
+              <LogoutButton />
+            </span>
           </nav>
         </div>
       </header>

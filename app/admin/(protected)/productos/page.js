@@ -71,56 +71,66 @@ export default async function AdminProductsPage() {
             return (
               <li
                 key={product.id}
-                className="flex flex-wrap items-center gap-4 rounded-sm border border-ink/10 bg-card p-4"
+                // Columna en mobile, fila en sm+ (sm:contents disuelve los dos
+                // wrappers de abajo y deja exactamente la misma fila plana de
+                // siempre). Sin esto, en mobile el div de nombre (flex-1
+                // min-w-0) terminaba cediéndole casi todo el espacio a precio +
+                // badge + "Editar" + acciones, y el nombre del producto
+                // quedaba comprimido a ~15px — texto partido letra por letra.
+                className="flex flex-col gap-3 rounded-sm border border-ink/10 bg-card p-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
               >
-                <div className="relative flex h-16 w-12 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-sand">
-                  {coverUrl ? (
-                    <Image
-                      src={coverUrl}
-                      alt=""
-                      fill
-                      sizes="48px"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <ImageIcon
-                      className="h-5 w-5 text-ink/30"
-                      strokeWidth={1.5}
-                    />
-                  )}
+                <div className="flex items-center gap-4 sm:contents">
+                  <div className="relative flex h-16 w-12 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-sand">
+                    {coverUrl ? (
+                      <Image
+                        src={coverUrl}
+                        alt=""
+                        fill
+                        sizes="48px"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <ImageIcon
+                        className="h-5 w-5 text-ink/30"
+                        strokeWidth={1.5}
+                      />
+                    )}
+                  </div>
+
+                  <div className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="font-body text-sm font-medium">
+                      {product.name}
+                    </span>
+                    <span className="text-xs text-ink/50">
+                      {category?.name ?? "Sin categoría"}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <span className="font-body text-sm font-medium">
-                    {product.name}
+                <div className="flex flex-wrap items-center gap-3 sm:contents">
+                  <span className="font-body text-sm font-bold">
+                    {formatPrice(product.price)}
                   </span>
-                  <span className="text-xs text-ink/50">
-                    {category?.name ?? "Sin categoría"}
+
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-medium ${
+                      product.is_published
+                        ? "bg-caramel/20 text-caramel"
+                        : "bg-ink/10 text-ink/50"
+                    }`}
+                  >
+                    {product.is_published ? "Publicado" : "Borrador"}
                   </span>
+
+                  <Link
+                    href={`/admin/productos/${product.id}`}
+                    className="text-sm underline-offset-4 transition-colors hover:text-caramel hover:underline"
+                  >
+                    Editar
+                  </Link>
+
+                  <ProductRowActions product={product} />
                 </div>
-
-                <span className="font-body text-sm font-bold">
-                  {formatPrice(product.price)}
-                </span>
-
-                <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${
-                    product.is_published
-                      ? "bg-caramel/20 text-caramel"
-                      : "bg-ink/10 text-ink/50"
-                  }`}
-                >
-                  {product.is_published ? "Publicado" : "Borrador"}
-                </span>
-
-                <Link
-                  href={`/admin/productos/${product.id}`}
-                  className="text-sm underline-offset-4 transition-colors hover:text-caramel hover:underline"
-                >
-                  Editar
-                </Link>
-
-                <ProductRowActions product={product} />
               </li>
             );
           })}
