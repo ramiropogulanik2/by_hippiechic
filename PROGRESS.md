@@ -272,3 +272,16 @@ Auditoría de 5 puntos sobre app/admin/login, proxy.js y los Server Actions de e
 ### Notas técnicas de la Fase 12.5
 - requireAdminSession() usa getUser(), no getSession(): getUser() revalida el token contra el servidor de Supabase, getSession() confía en la cookie tal cual llegó sin validarla de nuevo. Mismo criterio que ya usa proxy.js.
 - Verificación: npm run build sin errores. No se probó el bypass real (armar a mano un POST con el id de una Server Action apuntando a una ruta pública) porque hubiera significado construir un exploit funcional contra el propio proyecto — el chequeo se validó por code review, comparando la lógica con la de proxy.js (ya probada en la Fase 6) y confirmando que el guard corta antes de cualquier llamada a createAdminClient() o al bucket de Storage.
+
+## Fase 14 — Dashboard del admin con métricas reales
+- Reemplazado el placeholder de bienvenida por métricas reales: pedidos pendientes, productos publicados, categorías activas, ingresos del mes
+- Alerta de stock bajo (variantes con stock <= 2, máximo 8, ordenadas ascendente)
+- Últimos 5 pedidos con acceso directo al detalle
+- Accesos rápidos a crear categoría/producto
+
+### Notas técnicas de la Fase 14
+- Las 6 queries del dashboard van en un solo Promise.all, no en secuencia: son todas independientes entre sí (nada depende del resultado de otra), así que no hay motivo para esperarlas una por una.
+- Ingresos del mes: se trajeron los totales de las orders confirmadas del mes y se sumaron a mano con reduce(), en vez de pedirle el sum() a Postgres. A propósito: numeric(10,2) puede volver de postgrest como string, y sumar con + sin pasar por Number() antes concatena en vez de sumar (0 + "15000" da "015000", no 15000). Se aplicó Number(order.total) en cada vuelta del reduce para evitarlo.
+- Stock bajo hace un embed a products(name) desde product_variants: mismo caso ya documentado en el detalle de pedido (Fase 8 o donde haya quedado) de que el embed puede volver como objeto o como array de un elemento según cómo lo resuelva Supabase — se reusó el mismo helper firstOf() que ya existía ahí.
+- Verificación: npm run build sin errores, /admin confirmado que redirige a /admin/login sin sesión. Como no hay credenciales de admin en este entorno para ver el dashboard renderizado con datos reales, se corrió una consulta SQL de solo lectura directa contra la base (vía el MCP de Supabase) replicando la lógica de las 6 queries del dashboard, para confirmar que devuelven números sensatos antes de darlo por terminado: 1 pedido pendiente, 27 productos publicados, 8 categorías activas, $0 de ingresos del mes (no hay pedidos confirmados todavía), 9 variantes con stock bajo (el dashboard corta en 8, como pide la spec).
+- Pendiente de confirmar por la dueña, logueada: que el dashboard se vea bien de verdad en el navegador (esto no se pudo verificar visualmente, solo por datos y por build).
