@@ -6,6 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 // y todo lo que cuelgue de él, pero NO /admin/login — que está fuera del grupo
 // y por eso se renderiza sin este shell.
 const NAV_LINKS = [
+  { label: "Hero", href: "/admin/hero" },
   { label: "Categorías", href: "/admin/categorias" },
   { label: "Productos", href: "/admin/productos" },
   { label: "Pedidos", href: "/admin/pedidos" },

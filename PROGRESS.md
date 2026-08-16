@@ -238,3 +238,19 @@
 - El carrito se reestructuró a dos columnas en lg+ (lista + panel sticky de total/formulario). Pasarlo de max-w-3xl a max-w-7xl en una sola columna habría dejado las líneas del pedido estiradas de punta a punta, peor que antes.
 - OJO al verificar en el navegador con el pane oculto: getComputedStyle devuelve valores viejos (el renderer está throttleado). El indicador de swipe parecía no ocultarse — leyendo el atributo class real se confirmó que sí. Misma trampa que ya apareció en las fases 11.5 y 9.5.
 - Para chequear si un acento tapa texto NO sirve comparar getBoundingClientRect de h2/p: son elementos de bloque y su caja ocupa todo el ancho aunque los glifos estén solo a la izquierda. Hay que medir con un Range sobre el contenido (range.selectNodeContents + getBoundingClientRect).
+
+## Fase 12 — Hero administrable + puntitos de navegación
+- Tabla hero_images (lectura pública, escritura vía service_role): id, image_url, display_order
+- Admin: /admin/hero con CRUD de fotos (subir, mover arriba/abajo, eliminar), agregado al nav
+- Server actions en lib/actions/heroImages.js: addHeroImage, removeHeroImage, moveHeroImage — mismo patrón de swap de display_order que moveCategory
+- Público: app/(shop)/page.js ya no importa un array HERO_IMAGES hardcodeado, hace query a hero_images ordenado por display_order
+- Si la tabla queda vacía, la home no rompe: fondo caramel sólido con altura fija en vez de un carrusel sin fotos
+- Indicador de swipe reemplazado: eran un chevron con fade automático (Fase 11.8), ahora son puntitos tipo Instagram Stories debajo del carrusel, sincronizados con Embla vía emblaApi.on('select'), con click para saltar directo a una foto (emblaApi.scrollTo)
+- Se eliminó el @keyframes swipe-hint de globals.css, quedaba huérfano tras sacar el chevron
+
+### Notas técnicas de la Fase 12
+- El array HERO_IMAGES que se reemplazó tenía 7 fotos, no 3: el comentario que lo describía ("agregar más rutas cuando la dueña confirme más fotos") había quedado desactualizado desde que se sumaron hero-4 a hero-7 en una fase anterior. Se migraron las 7 a la tabla como seed de la misma migración, no solo 3.
+- removeHeroImage intenta borrar también el archivo de Storage, pero solo si la URL matchea el patrón público del bucket catalog-images. Las 7 fotos originales son archivos de /public (rutas relativas tipo "/hero-1.jpg"), así que al eliminarlas de la tabla no hay nada que borrar en Storage — se ignora en silencio, no es un error.
+- HeroUploadForm fuerza un remount de ImageUploadField (cambiando su key) después de subir una foto: el input file se resetea con form.reset(), pero eso no dispara el evento onChange que limpia el preview interno del componente, así que sin el remount la miniatura de la foto ya subida se quedaría pegada en la vista previa.
+- Verificación: npm run build sin errores, /admin/hero confirmado que redirige a /admin/login sin sesión (probado navegando directo a la URL). El click en los puntitos se probó invocando .click() sobre los botones reales vía JS y leyendo el atributo class resultante (el mismo motivo de siempre: con el pane no compositando, tanto los clicks de mouse simulados por el tool como los screenshots hacen timeout).
+- Pendiente de probar por la dueña, logueada: subir una foto nueva de verdad (upload a Storage + insert), reordenar con las flechas, y eliminar una foto (incluyendo que borre el archivo de Storage cuando corresponda). No hay credenciales de admin disponibles en este entorno para probarlo de punta a punta.
