@@ -1,6 +1,7 @@
 import AboutSection from "@/components/AboutSection";
 import CategoryCard from "@/components/CategoryCard";
 import HeroCarousel from "@/components/HeroCarousel";
+import LogoMarquee from "@/components/LogoMarquee";
 import BotanicalAccent from "@/components/ui/BotanicalAccent";
 import Eyebrow from "@/components/ui/Eyebrow";
 import { createClient } from "@/lib/supabase/server";
@@ -72,6 +73,9 @@ export default async function HomePage() {
           </a>
         </div>
       </section>
+
+      {/* ---------- Banda de logo (separador) ---------- */}
+      <LogoMarquee />
 
       {/* ---------- Quiénes somos (fondo "card") ---------- */}
       {/* Ya no lleva wrapper con padding: el cambio de tono a "card" es lo

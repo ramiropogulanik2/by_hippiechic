@@ -14,10 +14,22 @@
   --font-display: var(--font-cormorant);
   --font-body: var(--font-work-sans);
   --font-accent: var(--font-caveat);
-  --font-marker: var(--font-permanent-marker);
 }
 
 body {
   background-color: var(--color-sand);
   color: var(--color-ink);
+}
+
+/* Banda de logos en movimiento (components/LogoMarquee.jsx). Mismo truco que
+   el marquee del hero (Fase 11.6, ya eliminado): el track duplica el set de
+   logos una vez y anima 0 -> -50%, así el segundo tramo es idéntico al
+   primero y el loop no se nota. */
+@keyframes marquee-logo {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
