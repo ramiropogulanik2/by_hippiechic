@@ -300,7 +300,7 @@ Auditoría de 5 puntos sobre app/admin/login, proxy.js y los Server Actions de e
 - npm run build sin errores. La ruta temporal de QA se borró antes de commitear, no forma parte del build final (confirmado: no aparece en la lista de rutas).
 
 ## Fase 15 — Logo real en el header, banda de marquee decorativa
-- Header: el wordmark de texto (fuente Permanent Marker) + los dos Arrow ícono quedan reemplazados por el archivo real hippiechic-logo-v2.png vía next/image, h-10 en mobile / h-12 en desktop, width auto
+- Header: el wordmark de texto (fuente Permanent Marker) + los dos Arrow ícono quedan reemplazados por el archivo real hippiechic-logo-v2.png vía next/image, h-10 en mobile / h-12 en desktop, width auto (ajustado después a h-12/h-16 — ver más abajo)
 - Nuevo components/LogoMarquee.jsx: banda fondo "ink" con el logo repetido en loop horizontal continuo (CSS puro, sin JS), como separador entre el Hero y "Quiénes somos" en la home
 - Limpieza: components/ui/Arrow.jsx eliminado (quedó sin ningún uso en todo el proyecto), y la fuente Permanent Marker sacada de app/layout.js y del token --font-marker en globals.css (idem, sin uso una vez sacado el wordmark)
 
@@ -311,6 +311,7 @@ Auditoría de 5 puntos sobre app/admin/login, proxy.js y los Server Actions de e
 - Verificado también: filter computado en el navegador (`brightness(0) invert(1)`), animation-name/duration/iteration-count/timing-function del track (marquee-logo, 25s, infinite, linear) y que la regla de pausa por hover está en el CSS compilado real (`.group-hover\:[animation-play-state\:paused]:is(:where(.group):hover *)`), mismo método que en la Fase 11.6.
 - Sin overflow horizontal en ningún tamaño (mobile y desktop, document.body.scrollWidth === clientWidth en ambos).
 - npm run build sin errores.
+- Ajuste posterior a pedido de la dueña: el logo se veía chico, se agrandó de h-10/h-12 a h-12/h-16 (48px mobile, 64px desktop). Verificado que sigue entrando en la fila del header sin desbordar en ningún tamaño.
 
 ## Fase 16 — Footer completo con políticas, cookies y WhatsApp flotante
 - react-icons agregado (íconos de marca reales: Instagram, Facebook, WhatsApp)
