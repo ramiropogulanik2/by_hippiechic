@@ -4,7 +4,7 @@ const nextConfig = {
   // distinto al que arrancó el server (solo localhost por defecto). La página
   // carga igual (SSR), pero el JS de hidratación no, y por eso ningún botón
   // responde al abrir el sitio desde el celular por la IP de LAN.
-  allowedDevOrigins: ["192.168.5.241"],
+  allowedDevOrigins: ["192.168.0.236"],
   images: {
     remotePatterns: [
       // Placeholders del hero mientras no haya fotos reales.
