@@ -25,6 +25,14 @@ export const metadata = {
     "Catálogo boho-chic. Envíos a todo el país. Los pedidos se confirman por WhatsApp.",
 };
 
+// themeColor va en un export "viewport" aparte, no dentro de "metadata": Next
+// dejó de aceptarlo ahí hace varias versiones. Sin esto, en mobile la barra
+// de direcciones/UI del navegador toma un color por default en vez de
+// combinar con el sitio (token "sand").
+export const viewport = {
+  themeColor: "#ede4d3",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html
