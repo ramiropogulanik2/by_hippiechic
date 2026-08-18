@@ -5,7 +5,7 @@ import { Trash2 } from "lucide-react";
 const EMPTY_VARIANT = { size: "", color: "", stock: 0 };
 
 const inputClass =
-  "w-full rounded-sm border border-ink/20 bg-card px-3 py-2 font-body text-sm text-ink placeholder:text-ink/40 focus:border-caramel focus:outline-none";
+  "w-full rounded-sm border border-ink/20 bg-card px-3 py-2 font-body text-sm text-ink placeholder:text-ink/60 focus:border-caramel focus:outline-none";
 
 export default function VariantManager({ variants = [], onChange }) {
   // Componente controlado: no guarda estado propio. La fila vacía por defecto
@@ -41,8 +41,14 @@ export default function VariantManager({ variants = [], onChange }) {
             className="flex flex-wrap items-end gap-2"
           >
             <div className="flex min-w-24 flex-1 flex-col gap-1">
-              <label className="text-xs text-ink/60">Talle</label>
+              <label
+                htmlFor={`variant-size-${index}`}
+                className="text-xs text-ink/60"
+              >
+                Talle
+              </label>
               <input
+                id={`variant-size-${index}`}
                 type="text"
                 value={row.size ?? ""}
                 onChange={(event) =>
@@ -54,8 +60,14 @@ export default function VariantManager({ variants = [], onChange }) {
             </div>
 
             <div className="flex min-w-24 flex-1 flex-col gap-1">
-              <label className="text-xs text-ink/60">Color</label>
+              <label
+                htmlFor={`variant-color-${index}`}
+                className="text-xs text-ink/60"
+              >
+                Color
+              </label>
               <input
+                id={`variant-color-${index}`}
                 type="text"
                 value={row.color ?? ""}
                 onChange={(event) =>
@@ -67,8 +79,14 @@ export default function VariantManager({ variants = [], onChange }) {
             </div>
 
             <div className="flex w-24 flex-col gap-1">
-              <label className="text-xs text-ink/60">Stock</label>
+              <label
+                htmlFor={`variant-stock-${index}`}
+                className="text-xs text-ink/60"
+              >
+                Stock
+              </label>
               <input
+                id={`variant-stock-${index}`}
                 type="number"
                 min="0"
                 value={row.stock ?? 0}

@@ -56,7 +56,7 @@ export default async function AdminHeroPage() {
                 )}
               </div>
 
-              <span className="flex-1 font-body text-sm text-ink/50">
+              <span className="flex-1 font-body text-sm text-ink/70">
                 Posición {index + 1}
               </span>
 

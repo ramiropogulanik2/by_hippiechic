@@ -329,3 +329,37 @@ Auditoría de 5 puntos sobre app/admin/login, proxy.js y los Server Actions de e
 - El botón "Hacer pedido" del carrito no se pudo verificar con el carrito cargado (no hay forma de agregar productos sin pasar por el flujo completo en este entorno de prueba, y el carrito es estado local de Zustand). Se razonó por geometría en vez de medirlo: el botón flotante ocupa un círculo fijo de 56x56 en la esquina, "Hacer pedido" es w-full (ocupa todo el ancho de la card), así que como mucho tapa la esquina inferior derecha del botón, nunca lo bloquea entero — mismo trade-off que usan la mayoría de los sitios con burbuja de WhatsApp + barra de checkout. Pendiente de confirmar a ojo por la dueña con productos reales en el carrito.
 - No se agregó botón de arrepentimiento, botón de baja ni link de Defensa del Consumidor, tal como se pidió explícitamente — queda pendiente de una confirmación legal futura, no es un olvido.
 - npm run build sin errores.
+
+## Fase 17 — Auditoría visual: Grupo A (arreglado) + Grupo B (propuestas)
+
+Auditoría pedida sobre capturas reales del sitio (público y admin) + el código de components/ y app/, separada en dos grupos: A se corrige directo, B solo se propone.
+
+### Grupo A — corregido
+- **Foco visible por teclado**: no existía en NINGÚN botón/link del sitio (solo los inputs lo tenían, vía focus:border-caramel). En vez de agregar la clase a mano en ~40 lugares, se agregó una regla global en globals.css (`a:focus-visible, button:focus-visible { outline: 2px solid var(--color-caramel); outline-offset: 2px; }`), que cubre todo el sitio de una vez sin tocar cada componente.
+- **Contraste de texto insuficiente** (medido con la fórmula real de WCAG, no a ojo):
+  - `text-ink/50` en texto real de 12-14px (no íconos): "Posición N" del admin de hero, slug de categoría, subtítulo de categoría en productos, badges "Oculta"/"Borrador", 3 labels del dashboard, timestamp de la lista de pedidos → subido a `text-ink/70` (pasa de ~3.1:1 a ~6:1, cumple AA en todos los casos).
+  - Texto "Sin imagen" en ImageUploadField y ProductImagesManager (`text-ink/40`, ~2.4:1) → el texto (no el ícono, que queda igual de sutil a propósito) sube a `text-ink/70`.
+  - Copyright del footer (`text-sand/50`, 4.3:1 sobre fondo ink) → `text-sand/70` (7:1).
+  - Placeholders de todos los inputs del sitio (`placeholder:text-ink/40`, ~2.4:1) → `placeholder:text-ink/60`, en los 5 archivos que comparten ese patrón (login, carrito, VariantManager, ProductForm, CategoryForm).
+  - `text-ink/60` (el tono "secundario" más usado en todo el sitio) también da un poco por debajo de AA (4.0-4.33:1 contra 4.5 necesario) — NO se tocó: es la convención dominante en decenas de lugares, cambiarla es una decisión de sistema de diseño, no un fix puntual. Queda como propuesta en el Grupo B.
+- **Accesibilidad de formularios**:
+  - ImageUploadField y ProductImagesManager: el "label" visual era un `<span>` suelto, sin asociar al input de archivo — ahora es un `<label htmlFor>` real con id en el input.
+  - VariantManager: los labels "Talle"/"Color"/"Stock" de cada fila no estaban asociados a su input (y se repiten una vez por fila) — ahora cada uno tiene id/htmlFor único por índice de fila.
+  - Foto principal de la galería de producto (ProductGallery): tenía `alt=""` — ahora usa el nombre real del producto (se agregó la prop `productName`, pasada desde la página de producto).
+- **Espaciado inconsistente**: los dos primeros bloques del footer usaban `py-14` y `py-12` sin ninguna razón visible entre sí (misma jerarquía de contenido) — unificados a `py-14`.
+- **Bug reportado en captura, investigado y descartado**: en la captura de /admin/hero, "Posición 1/2/3..." se veía violeta. Se verificó en el navegador el color computado real: es `oklab` correspondiente a ink al 50% (un marrón oscuro grisáceo), no violeta — no hay ninguna regla CSS que produzca ese tono en el código. Se aprovechó igual para subir el contraste (ver arriba), pero el "bug" en sí no era real — probablemente una lectura de la imagen a baja resolución/compresión.
+- **Colores hardcodeados**: único hallazgo real fue `bg-[#25D366]`/`text-white` en el botón flotante de WhatsApp — es el verde de marca oficial de WhatsApp, no un color del sistema de diseño del sitio; tokenizarlo a "caramel" rompería el reconocimiento de marca. Se dejó igual, con un comentario aclarando que es intencional.
+- **Estados vacíos/error**: revisados todos (categoría sin productos, carrito vacío, listas del admin sin datos, mensajes de error de formulario) — ya seguían un patrón consistente en todo el sitio (empty state centrado en font-accent text-2xl text-ink/60, error en text-sm text-rose). No se encontró ningún fallback genérico feo que corregir.
+- npm run build sin errores.
+
+### Grupo B — propuestas, sin tocar código
+
+1. **`text-ink/60` (y su equivalente en sand) por debajo de AA en casi todo el sitio.** Es el color de texto secundario más usado (subtítulos, ayudas, descripciones) y mide 4.0-4.33:1 contra el 4.5:1 que pide WCAG AA para texto normal — muy cerca, pero técnicamente no pasa. Arreglarlo implica cambiar la opacidad base de "texto secundario" en decenas de archivos, lo cual cambia el peso visual de todo el sitio, no un solo lugar puntual. Propuesta: subir a `/70` de forma sistemática (mismo criterio que ya se aplicó en el Grupo A a los casos peores) — pero como toca tantos archivos a la vez, prefiero que lo apruebes antes de tocarlo.
+
+2. **Sensación de marca: admin notoriamente menos cuidado que el público.** El sitio público tiene acentos deliberados (BotanicalAccent, marquee de logo, Eyebrow en Caveat manuscrita, paleta caramel/rose usada con variedad). El admin es 100% funcional: tarjetas, listas, botones — sin ningún toque decorativo. Es una decisión válida (un admin más "quieto" ayuda a que la dueña opere rápido, sin ruido visual), pero si preferís que se sienta más "Hippie & Chic" y menos genérico, se podría sumar algo mínimo (el Eyebrow manuscrito en algunos títulos del admin, o un detalle de color en el header) sin tocar la usabilidad.
+
+3. **Página de producto se siente vacía debajo de "Agregar al carrito".** Queda bastante espacio en blanco a la derecha de la foto, sin nada que refuerce la decisión de compra (envío, cambios, medios de pago) — justo la información que ahora vive en los popups del footer, pero un poco escondida. Se podría sumar un bloque corto con esos 3 datos clave directo en la página de producto.
+
+4. **Tarjetas de métricas del dashboard son texto plano.** Comparadas con el resto del sitio (que usa íconos, color, acentos), las 4 tarjetas de arriba del dashboard son solo número + label sin ningún apoyo visual. Un ícono por métrica o un color sutil distinto por tipo (ingresos vs. alertas) las haría más rápidas de escanear.
+
+5. **Franja fina de color en el borde superior de varias capturas (footer, categoría, producto, admin pedidos/hero).** Se ve una línea delgada verdosa/turquesa pegada al borde de arriba en varias de las imágenes que mandaste. La busqué en el código y no encontré ninguna regla que la explique, y no pude reproducirla navegando el sitio yo mismo en este entorno. Puede ser un artefacto del navegador/SO al capturar (barra de progreso de carga, extensión) y no algo del sitio — si la seguís viendo después de un refresh fuerte, mandame una captura con las devtools abiertas en la pestaña Elements para encontrar el origen real antes de tocar nada.

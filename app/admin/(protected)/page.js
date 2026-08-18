@@ -94,7 +94,7 @@ export default async function AdminHomePage() {
             key={metric.label}
             className="flex flex-col gap-1 rounded-sm border border-ink/10 bg-card p-5"
           >
-            <span className="font-body text-xs text-ink/50">
+            <span className="font-body text-xs text-ink/70">
               {metric.label}
             </span>
             <span className="font-display text-2xl font-semibold sm:text-3xl">
@@ -151,7 +151,7 @@ export default async function AdminHomePage() {
                         {product?.name ?? "Producto eliminado"}
                       </span>
                       {variantLabel && (
-                        <span className="text-xs text-ink/50">
+                        <span className="text-xs text-ink/70">
                           {variantLabel}
                         </span>
                       )}
@@ -203,7 +203,7 @@ export default async function AdminHomePage() {
                       <span className="truncate font-body text-sm font-medium">
                         {order.customer_name ?? "Sin nombre"}
                       </span>
-                      <span className="text-xs text-ink/50">
+                      <span className="text-xs text-ink/70">
                         {formatRelativeDate(order.created_at)}
                       </span>
                     </div>

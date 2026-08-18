@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 
-export default function ProductGallery({ images = [] }) {
+export default function ProductGallery({ images = [], productName = "" }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (images.length === 0) {
@@ -21,7 +21,7 @@ export default function ProductGallery({ images = [] }) {
       <div className="relative aspect-[3/4] w-full overflow-hidden rounded-sm bg-sand">
         <Image
           src={activeImage.image_url}
-          alt=""
+          alt={productName}
           fill
           sizes="(min-width: 1024px) 50vw, 100vw"
           className="object-cover"

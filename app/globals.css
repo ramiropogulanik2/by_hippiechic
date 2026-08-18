@@ -21,6 +21,18 @@ body {
   color: var(--color-ink);
 }
 
+/* Foco visible por teclado en todos los botones y links del sitio (público y
+   admin), de una sola vez en vez de repetir la clase en cada componente.
+   :focus-visible (no :focus) para que solo aparezca con teclado/lector de
+   pantalla, no en cada click de mouse. Los inputs/selects quedan afuera a
+   propósito: ya tienen su propio tratamiento de foco (focus:border-caramel
+   focus:outline-none, ver inputClass en los formularios del admin). */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-caramel);
+  outline-offset: 2px;
+}
+
 /* Banda de logos en movimiento (components/LogoMarquee.jsx). Mismo truco que
    el marquee del hero (Fase 11.6, ya eliminado): el track duplica el set de
    logos una vez y anima 0 -> -50%, así el segundo tramo es idéntico al

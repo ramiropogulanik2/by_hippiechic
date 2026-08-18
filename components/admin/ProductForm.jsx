@@ -6,7 +6,7 @@ import ProductImagesManager from "@/components/admin/ProductImagesManager";
 import VariantMatrixBuilder from "@/components/admin/VariantMatrixBuilder";
 
 const inputClass =
-  "w-full rounded-sm border border-ink/20 bg-card px-3 py-2 font-body text-sm text-ink placeholder:text-ink/40 focus:border-caramel focus:outline-none";
+  "w-full rounded-sm border border-ink/20 bg-card px-3 py-2 font-body text-sm text-ink placeholder:text-ink/60 focus:border-caramel focus:outline-none";
 
 export default function ProductForm({
   product = null,

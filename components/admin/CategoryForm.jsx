@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 
 const inputClass =
-  "w-full rounded-sm border border-ink/20 bg-card px-3 py-2 font-body text-sm text-ink placeholder:text-ink/40 focus:border-caramel focus:outline-none";
+  "w-full rounded-sm border border-ink/20 bg-card px-3 py-2 font-body text-sm text-ink placeholder:text-ink/60 focus:border-caramel focus:outline-none";
 
 export default function CategoryForm({ category = null, action }) {
   const router = useRouter();

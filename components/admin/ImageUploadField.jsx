@@ -26,7 +26,9 @@ export default function ImageUploadField({
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-sm font-medium">{label}</span>
+      <label htmlFor={name} className="text-sm font-medium">
+        {label}
+      </label>
 
       <div className="flex items-center gap-4">
         <div className="relative flex aspect-square w-24 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-ink/10 bg-sand">
@@ -40,12 +42,13 @@ export default function ImageUploadField({
           ) : (
             <div className="flex flex-col items-center gap-1 text-ink/40">
               <ImageIcon className="h-6 w-6" strokeWidth={1.5} />
-              <span className="text-[10px]">Sin imagen</span>
+              <span className="text-[10px] text-ink/70">Sin imagen</span>
             </div>
           )}
         </div>
 
         <input
+          id={name}
           type="file"
           name={name}
           accept="image/*"

@@ -74,7 +74,7 @@ export default async function AdminCategoriesPage() {
                   <span className="font-body text-sm font-medium">
                     {category.name}
                   </span>
-                  <span className="font-mono text-xs text-ink/50">
+                  <span className="font-mono text-xs text-ink/70">
                     /{category.slug}
                   </span>
                 </div>
@@ -85,7 +85,7 @@ export default async function AdminCategoriesPage() {
                   className={`rounded-full px-3 py-1 text-xs font-medium ${
                     category.is_visible
                       ? "bg-caramel/20 text-caramel"
-                      : "bg-ink/10 text-ink/50"
+                      : "bg-ink/10 text-ink/70"
                   }`}
                 >
                   {category.is_visible ? "Visible" : "Oculta"}

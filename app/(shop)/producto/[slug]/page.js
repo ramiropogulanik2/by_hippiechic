@@ -53,7 +53,7 @@ export default async function ProductPage({ params }) {
       </div>
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
-        <ProductGallery images={images ?? []} />
+        <ProductGallery images={images ?? []} productName={product.name} />
 
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-3">

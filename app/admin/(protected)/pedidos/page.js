@@ -92,7 +92,7 @@ export default async function AdminOrdersPage({ searchParams }) {
                   <span className="font-body text-sm font-medium">
                     {order.customer_name ?? "Sin nombre"}
                   </span>
-                  <span className="text-xs text-ink/50">
+                  <span className="text-xs text-ink/70">
                     {formatRelativeDate(order.created_at)}
                   </span>
                 </div>

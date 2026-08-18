@@ -94,12 +94,14 @@ export default function ProductImagesManager({
 
   return (
     <div className="flex flex-col gap-3">
-      <span className="text-sm font-medium">Imágenes</span>
+      <label htmlFor="product-images-input" className="text-sm font-medium">
+        Imágenes
+      </label>
 
       {isEmpty ? (
         <div className="flex aspect-square w-24 flex-col items-center justify-center gap-1 rounded-sm border border-ink/10 bg-sand text-ink/40">
           <ImageIcon className="h-6 w-6" strokeWidth={1.5} />
-          <span className="text-[10px]">Sin imagen</span>
+          <span className="text-[10px] text-ink/70">Sin imagen</span>
         </div>
       ) : (
         <div className="flex flex-wrap gap-3">
@@ -179,6 +181,7 @@ export default function ProductImagesManager({
           si no el form mandaría también los que el usuario ya sacó. */}
       <input
         ref={fileInputRef}
+        id="product-images-input"
         type="file"
         accept="image/*"
         multiple

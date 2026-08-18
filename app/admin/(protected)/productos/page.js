@@ -101,7 +101,7 @@ export default async function AdminProductsPage() {
                     <span className="font-body text-sm font-medium">
                       {product.name}
                     </span>
-                    <span className="text-xs text-ink/50">
+                    <span className="text-xs text-ink/70">
                       {category?.name ?? "Sin categoría"}
                     </span>
                   </div>
@@ -116,7 +116,7 @@ export default async function AdminProductsPage() {
                     className={`rounded-full px-3 py-1 text-xs font-medium ${
                       product.is_published
                         ? "bg-caramel/20 text-caramel"
-                        : "bg-ink/10 text-ink/50"
+                        : "bg-ink/10 text-ink/70"
                     }`}
                   >
                     {product.is_published ? "Publicado" : "Borrador"}

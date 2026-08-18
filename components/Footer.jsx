@@ -56,7 +56,7 @@ export default function Footer() {
         )}
       </div>
 
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 border-b border-sand/10 px-4 py-12 text-center sm:px-6">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 border-b border-sand/10 px-4 py-14 text-center sm:px-6">
         <div className="flex flex-col items-center gap-3">
           <p className="font-accent text-2xl tracking-wide">HIPPIE &amp; CHIC</p>
 
@@ -111,7 +111,7 @@ export default function Footer() {
       </div>
 
       <div className="mx-auto px-4 py-6 text-center sm:px-6">
-        <p className="font-body text-xs text-sand/50">
+        <p className="font-body text-xs text-sand/70">
           © Hippie &amp; Chic {new Date().getFullYear()}. Todos los derechos
           reservados.
         </p>

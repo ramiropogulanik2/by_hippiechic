@@ -39,6 +39,9 @@ export default function WhatsAppFloatButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Escribinos por WhatsApp"
+      // bg-[#25D366] y text-white a propósito, no son un olvido: es el verde
+      // de marca de WhatsApp, no un color del sistema de diseño del sitio —
+      // cambiarlo a "caramel" rompería el reconocimiento del botón.
       className={`fixed right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-all hover:scale-105 ${
         clearBanner ? "bottom-36 sm:bottom-5" : "bottom-5"
       }`}
