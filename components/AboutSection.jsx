@@ -24,8 +24,8 @@ export default function AboutSection() {
           <Reveal className="flex flex-col">
             <Eyebrow>Conocé la tienda</Eyebrow>
 
-            <h2 className="mb-5 font-display text-3xl leading-tight sm:text-5xl">
-              Detrás de <span className="font-accent">Hippie &amp; Chic</span>
+            <h2 className="mb-5 font-classic text-3xl font-semibold leading-tight sm:text-5xl">
+              Detrás de <em className="italic">Hippie &amp; Chic</em>
             </h2>
 
             {/* TODO: copy placeholder, falta confirmarlo con la dueña. */}

@@ -46,6 +46,9 @@
      .font-accent más abajo). Una familia menos, más rango dentro de la que
      queda. */
   --font-accent: var(--font-fraunces);
+  /* Cormorant Garamond, solo para los 3 momentos de marca donde se prefirió
+     la serif original a la Fraunces itálica (ver .font-classic). */
+  --font-classic: var(--font-cormorant);
 }
 
 body {
@@ -68,6 +71,15 @@ body {
 .font-display {
   font-variation-settings: "SOFT" 40, "WONK" 0;
 }
+
+/* Cormorant Garamond — la serif original del sitio, de antes de este
+   experimento. Se prueba la Fraunces itálica (.font-accent) en toda la
+   marca, pero en 3 momentos puntuales (título del hero, título de "Quiénes
+   somos" y el logotipo del footer) se pidió volver a esta. La utilidad
+   .font-classic la genera Tailwind solo, a partir del token --font-classic
+   de @theme inline de arriba — escribirla acá a mano pisaba esa regla con
+   un var() que no resuelve en runtime (--font-classic no queda expuesta
+   como custom property real, Tailwind la usa solo para generar la clase). */
 
 /* Foco visible por teclado en todos los botones y links del sitio (público y
    admin), de una sola vez en vez de repetir la clase en cada componente.

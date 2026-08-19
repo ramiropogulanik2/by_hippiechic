@@ -1,4 +1,4 @@
-import { Fraunces, Karla } from "next/font/google";
+import { Cormorant_Garamond, Fraunces, Karla } from "next/font/google";
 import "./globals.css";
 
 // Fraunces es variable y expone dos ejes además del grosor: SOFT (redondea
@@ -13,6 +13,17 @@ const fraunces = Fraunces({
 
 const karla = Karla({
   variable: "--font-karla",
+  subsets: ["latin"],
+});
+
+// Vuelve solo para los 3 momentos de marca donde, probado el rediseño, se
+// prefirió la serif original a la Fraunces itálica (ver .font-classic en
+// globals.css). style: normal+italic para que la itálica sea real, no la
+// sintética que dibuja el navegador si solo se pide "normal".
+const cormorantGaramond = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 
@@ -38,7 +49,7 @@ export default function RootLayout({ children }) {
       data-scroll-behavior="smooth"
     >
       <body
-        className={`${fraunces.variable} ${karla.variable} min-h-full flex flex-col font-body`}
+        className={`${fraunces.variable} ${karla.variable} ${cormorantGaramond.variable} min-h-full flex flex-col font-body`}
       >
         {children}
       </body>

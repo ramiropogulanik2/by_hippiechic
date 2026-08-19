@@ -95,10 +95,9 @@ export default function HeroCarousel({ images = [] }) {
           <motion.h1
             {...textReveal}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-3xl font-display text-4xl leading-[1.05] text-sand drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)] sm:text-6xl lg:text-7xl"
+            className="max-w-3xl font-classic text-4xl font-semibold leading-[1.05] text-sand drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)] sm:text-6xl lg:text-7xl"
           >
-            Piezas con
-            <span className="font-accent"> carácter</span>
+            Piezas con <em className="italic">carácter</em>
           </motion.h1>
 
           <motion.div
