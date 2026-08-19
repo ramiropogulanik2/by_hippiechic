@@ -40,7 +40,7 @@ export default function CartLineItem({ item }) {
           </Link>
 
           {hasVariantInfo && (
-            <p className="text-xs text-ink/60">
+            <p className="text-xs text-ink/70">
               {[
                 item.size ? `Talle: ${item.size}` : null,
                 item.color ? `Color: ${item.color}` : null,
@@ -50,7 +50,7 @@ export default function CartLineItem({ item }) {
             </p>
           )}
 
-          <p className="text-xs text-ink/60">
+          <p className="text-xs text-ink/70">
             {formatPrice(item.unitPrice)} c/u
           </p>
         </div>

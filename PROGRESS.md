@@ -362,4 +362,27 @@ Auditoría pedida sobre capturas reales del sitio (público y admin) + el códig
 
 4. **Tarjetas de métricas del dashboard son texto plano.** Comparadas con el resto del sitio (que usa íconos, color, acentos), las 4 tarjetas de arriba del dashboard son solo número + label sin ningún apoyo visual. Un ícono por métrica o un color sutil distinto por tipo (ingresos vs. alertas) las haría más rápidas de escanear.
 
-5. **Franja fina de color en el borde superior de varias capturas (footer, categoría, producto, admin pedidos/hero).** Se ve una línea delgada verdosa/turquesa pegada al borde de arriba en varias de las imágenes que mandaste. La busqué en el código y no encontré ninguna regla que la explique, y no pude reproducirla navegando el sitio yo mismo en este entorno. Puede ser un artefacto del navegador/SO al capturar (barra de progreso de carga, extensión) y no algo del sitio — si la seguís viendo después de un refresh fuerte, mandame una captura con las devtools abiertas en la pestaña Elements para encontrar el origen real antes de tocar nada.
+5. **Franja fina de color en el borde superior de varias capturas (footer, categoría, producto, admin pedidos/hero).** Se ve una línea delgada verdosa/turquesa pegada al borde de arriba en varias de las imágenes que mandaste. La busqué en el código y no encontré ninguna regla que la explique, y no pude reproducirla navegando el sitio yo mismo en este entorno. Puede ser un artefacto del navegador/SO al capturar (barra de progreso de carga, extensión) y no algo del sitio — si la seguís viendo después de un refresh fuerte, mandame una captura con las devtools abiertas en la pestaña Elements para encontrar el origen real antes de tocar nada. **[Probable causa encontrada y corregida en la Fase 17.5: faltaba theme-color — ver esa fase.]**
+
+## Fase 17.5 — theme-color de la barra del navegador
+
+Pedido puntual, no parte de la auditoría: agregar theme-color a la paleta del proyecto. Probablemente explica el ítem 5 del Grupo B de la Fase 17 (la franja verdosa en las capturas) — sin theme-color, el navegador tiñe su propia UI (barra de direcciones en mobile) con un color por default en vez de combinar con el sitio.
+
+- app/layout.js no tenía ni themeColor en metadata ni un export viewport — se agregó `export const viewport = { themeColor: "#ede4d3" }` (en Next 16, themeColor va en viewport, no en metadata; ahí dejó de aceptarse hace varias versiones)
+- Verificado en el navegador: `<meta name="theme-color" content="#ede4d3">` presente en el HTML real
+- npm run build sin errores
+
+## Fase 18 — Resolución de 4 de los 5 puntos del Grupo B (Fase 17)
+
+Siguiendo el mismo formato de la auditoría: PASO 1 y 2 mecánicos (contraste), PASO 3-5 con criterio propio explicado y aprobado por la dueña antes de commitear.
+
+- **PASO 1 (theme-color)**: ya resuelto en la Fase 17.5, sin cambios acá.
+- **PASO 2 — `text-ink/60` → `text-ink/70`**: aplicado en todo texto legible chico (12-14px) que efectivamente fallaba AA (~4.0-4.33:1 → ~6-7:1). Sin tocar: `placeholder:text-ink/60` (categoría distinta, ya resuelta en la Fase 17), el color de íconos-solo-botón vía `iconButtonClass` (ya pasan el umbral de 3:1 para íconos, no es texto), y los empty states en `font-accent text-2xl` (texto grande, ya pasa AA-large en 3:1 — no había base matemática para tocarlos).
+- **PASO 3 — Info de confianza en producto**: bloque con borde (`border-ink/10 bg-card`, mismo estilo que ya usa el sitio) con 3 líneas ícono+texto (Truck/Landmark/RotateCcw de lucide-react) inmediatamente debajo de "Agregar al carrito" en app/(shop)/producto/[slug]/page.js — el hueco vacío señalado en la Fase 17. Contenido resumido a una línea por punto (no el texto largo de lib/policyContent.js), porque ahí compite por atención con el botón de compra.
+- **PASO 4 — Identidad de marca en el admin**: el logo real (mismo PNG del header público, invertido a blanco con el mismo filtro `brightness(0) invert(1)` que ya usa components/LogoMarquee.jsx) reemplaza el texto "Hippie & Chic — Admin" en app/admin/(protected)/layout.js, con "Admin" al lado en Caveat para no perder la distinción de un vistazo. Se sumó una línea caramel de 2px (`border-b-2 border-caramel`) bajo el header. Se descartó agregar un Eyebrow manuscrito arriba de cada título de página del admin (Categorías, Productos, Pedidos): son pantallas que se escanean rápido y seguido, y eso hubiera sido exactamente el "ruido visual que hace más lento el trabajo diario" que la dueña pidió evitar explícitamente.
+- **PASO 5 — Cards de métricas del dashboard**: un ícono por métrica (ShoppingBag/Package/Tags/Wallet de lucide-react) en un círculo caramel tenue a la izquierda del número, mismo lenguaje visual que ya usa AboutSection (ícono + texto). El número se mantiene como el elemento más grande de cada card. Se descartó diferenciar "Pedidos pendientes" con un color de fondo distinto cuando el valor es > 0: introducía un estado condicional que podía leerse como bug sin explicación, y no valía la complejidad extra para lo pedido.
+- Queda pendiente el punto 1 del Grupo B (el `text-ink/60` de base del sitio, 4.0-4.33:1, sistémico) — no se tocó, no fue parte de este pedido.
+
+### Notas técnicas de la Fase 18
+- Verificación: se reconstruyó la ruta temporal de QA (app/qa-mobile-admin, renderiza las Server Components del admin fuera de /admin sin necesitar sesión) para confirmar en el navegador el logo del header, la línea caramel, las 4 cards con ícono, y el bloque de confianza en una página de producto real — y se borró antes de commitear (confirmado dos veces: Glob y listado directo de app/, ninguno encuentra la carpeta).
+- npm run build sin errores en cada paso.

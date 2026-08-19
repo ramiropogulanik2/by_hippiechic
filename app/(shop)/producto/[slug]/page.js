@@ -1,10 +1,20 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Landmark, RotateCcw, Truck } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import ProductGallery from "@/components/ProductGallery";
 import ProductVariantSelector from "@/components/ProductVariantSelector";
 import { formatPrice } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
+
+// Resumen corto a propósito: la versión larga de cada tema ya vive en
+// lib/policyContent.js (popups del footer). Acá no se repite el texto
+// completo, solo el dato que empuja a completar la compra.
+const TRUST_POINTS = [
+  { Icon: Truck, label: "Envíos a todo el país por Andreani" },
+  { Icon: Landmark, label: "Pago por transferencia, se coordina por WhatsApp" },
+  { Icon: RotateCcw, label: "Cambios dentro de los 7 días" },
+];
 
 export default async function ProductPage({ params }) {
   const { slug } = await params;
@@ -79,6 +89,24 @@ export default async function ProductPage({ params }) {
             price={product.price}
             imageUrl={images?.[0]?.image_url ?? null}
           />
+
+          {/* Refuerza la decisión de compra justo después del CTA, que es
+              donde más se necesita — el detalle completo de cada punto ya
+              está a un click en el footer, esto es solo el resumen. */}
+          <ul className="flex flex-col gap-3 rounded-sm border border-ink/10 bg-card p-4">
+            {TRUST_POINTS.map(({ Icon, label }) => (
+              <li
+                key={label}
+                className="flex items-center gap-3 text-sm text-ink/80"
+              >
+                <Icon
+                  className="h-4 w-4 shrink-0 text-caramel"
+                  strokeWidth={1.5}
+                />
+                {label}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 

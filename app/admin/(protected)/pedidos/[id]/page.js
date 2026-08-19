@@ -56,7 +56,7 @@ export default async function OrderDetailPage({ params }) {
           <OrderStatusBadge status={order.status} size="lg" />
         </div>
 
-        <p className="text-sm text-ink/60">{formatFullDate(order.created_at)}</p>
+        <p className="text-sm text-ink/70">{formatFullDate(order.created_at)}</p>
 
         {phoneDigits && (
           <div className="flex flex-wrap items-center gap-3 text-sm">
@@ -94,10 +94,10 @@ export default async function OrderDetailPage({ params }) {
                   </span>
 
                   {variantLabel && (
-                    <span className="text-xs text-ink/60">{variantLabel}</span>
+                    <span className="text-xs text-ink/70">{variantLabel}</span>
                   )}
 
-                  <span className="text-xs text-ink/60">
+                  <span className="text-xs text-ink/70">
                     {item.quantity} × {formatPrice(item.unit_price)}
                   </span>
                 </div>

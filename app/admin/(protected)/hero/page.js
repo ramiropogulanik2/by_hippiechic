@@ -26,7 +26,7 @@ export default async function AdminHeroPage() {
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-1">
         <h1 className="font-display text-3xl font-semibold">Hero</h1>
-        <p className="font-body text-sm text-ink/60">
+        <p className="font-body text-sm text-ink/70">
           Fotos que rotan en el carrusel de la portada, en este orden.
         </p>
       </div>

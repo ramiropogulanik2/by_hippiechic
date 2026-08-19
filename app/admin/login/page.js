@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
     <div className="flex min-h-screen flex-1 items-center justify-center bg-sand px-4">
       <div className="w-full max-w-sm rounded-sm border border-ink/10 bg-card p-8">
         <h1 className="font-accent text-3xl tracking-wide">HIPPIE &amp; CHIC</h1>
-        <p className="mb-8 mt-1 font-body text-sm text-ink/60">
+        <p className="mb-8 mt-1 font-body text-sm text-ink/70">
           Panel de administración
         </p>
 

@@ -28,7 +28,7 @@ export default function VariantManager({ variants = [], onChange }) {
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
         <span className="text-sm font-medium">Variantes</span>
-        <p className="text-xs text-ink/60">
+        <p className="text-xs text-ink/70">
           Dejá Talle y Color vacíos si el producto no tiene variantes (ej: una
           cartera única).
         </p>
@@ -43,7 +43,7 @@ export default function VariantManager({ variants = [], onChange }) {
             <div className="flex min-w-24 flex-1 flex-col gap-1">
               <label
                 htmlFor={`variant-size-${index}`}
-                className="text-xs text-ink/60"
+                className="text-xs text-ink/70"
               >
                 Talle
               </label>
@@ -62,7 +62,7 @@ export default function VariantManager({ variants = [], onChange }) {
             <div className="flex min-w-24 flex-1 flex-col gap-1">
               <label
                 htmlFor={`variant-color-${index}`}
-                className="text-xs text-ink/60"
+                className="text-xs text-ink/70"
               >
                 Color
               </label>
@@ -81,7 +81,7 @@ export default function VariantManager({ variants = [], onChange }) {
             <div className="flex w-24 flex-col gap-1">
               <label
                 htmlFor={`variant-stock-${index}`}
-                className="text-xs text-ink/60"
+                className="text-xs text-ink/70"
               >
                 Stock
               </label>

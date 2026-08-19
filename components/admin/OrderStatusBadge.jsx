@@ -11,7 +11,7 @@ const STATUS_LABELS = {
 };
 
 export default function OrderStatusBadge({ status, size = "sm" }) {
-  const style = STATUS_STYLES[status] ?? "bg-ink/10 text-ink/60";
+  const style = STATUS_STYLES[status] ?? "bg-ink/10 text-ink/70";
   const sizeClass =
     size === "lg" ? "px-4 py-1.5 text-sm" : "px-3 py-1 text-xs";
 

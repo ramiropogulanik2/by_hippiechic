@@ -160,7 +160,7 @@ export default function CartPage() {
               {isSubmitting ? "Enviando pedido..." : "Hacer pedido"}
             </button>
 
-            <p className="mt-3 text-center text-xs text-ink/60">
+            <p className="mt-3 text-center text-xs text-ink/70">
               El pedido se confirma por WhatsApp
             </p>
           </aside>

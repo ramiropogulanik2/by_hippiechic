@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Package, ShoppingBag, Tags, Wallet } from "lucide-react";
 import OrderStatusBadge from "@/components/admin/OrderStatusBadge";
 import { formatPrice, formatRelativeDate } from "@/lib/format";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -72,10 +73,22 @@ export default async function AdminHomePage() {
   const recentOrderList = recentOrders ?? [];
 
   const metrics = [
-    { label: "Pedidos pendientes", value: pendingOrdersCount ?? 0 },
-    { label: "Productos publicados", value: publishedProductsCount ?? 0 },
-    { label: "Categorías activas", value: activeCategoriesCount ?? 0 },
-    { label: "Ingresos del mes", value: formatPrice(monthlyRevenue) },
+    {
+      label: "Pedidos pendientes",
+      value: pendingOrdersCount ?? 0,
+      Icon: ShoppingBag,
+    },
+    {
+      label: "Productos publicados",
+      value: publishedProductsCount ?? 0,
+      Icon: Package,
+    },
+    {
+      label: "Categorías activas",
+      value: activeCategoriesCount ?? 0,
+      Icon: Tags,
+    },
+    { label: "Ingresos del mes", value: formatPrice(monthlyRevenue), Icon: Wallet },
   ];
 
   return (
@@ -84,22 +97,28 @@ export default async function AdminHomePage() {
         <h1 className="font-display text-3xl font-semibold sm:text-4xl">
           Panel de administración
         </h1>
-        <p className="font-body text-sm text-ink/60">Hippie &amp; Chic</p>
+        <p className="font-body text-sm text-ink/70">Hippie &amp; Chic</p>
       </div>
 
       {/* ---------- Métricas ---------- */}
+      {/* El ícono es solo apoyo para escanear más rápido cuál tarjeta es
+          cuál — el número sigue siendo lo más grande y lo primero que se lee
+          en cada una, no compite con él. */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {metrics.map((metric) => (
+        {metrics.map(({ label, value, Icon }) => (
           <div
-            key={metric.label}
-            className="flex flex-col gap-1 rounded-sm border border-ink/10 bg-card p-5"
+            key={label}
+            className="flex items-center gap-3 rounded-sm border border-ink/10 bg-card p-5"
           >
-            <span className="font-body text-xs text-ink/70">
-              {metric.label}
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-caramel/15 text-caramel">
+              <Icon className="h-5 w-5" strokeWidth={1.5} />
             </span>
-            <span className="font-display text-2xl font-semibold sm:text-3xl">
-              {metric.value}
-            </span>
+            <div className="flex flex-col gap-1">
+              <span className="font-body text-xs text-ink/70">{label}</span>
+              <span className="font-display text-2xl font-semibold sm:text-3xl">
+                {value}
+              </span>
+            </div>
           </div>
         ))}
       </div>
@@ -126,7 +145,7 @@ export default async function AdminHomePage() {
           <h2 className="font-display text-xl font-semibold">Stock bajo</h2>
 
           {lowStockList.length === 0 ? (
-            <p className="rounded-sm border border-ink/10 bg-card p-6 text-center font-body text-sm text-ink/60">
+            <p className="rounded-sm border border-ink/10 bg-card p-6 text-center font-body text-sm text-ink/70">
               Todo con buen stock
             </p>
           ) : (
@@ -188,7 +207,7 @@ export default async function AdminHomePage() {
           </div>
 
           {recentOrderList.length === 0 ? (
-            <p className="rounded-sm border border-ink/10 bg-card p-6 text-center font-body text-sm text-ink/60">
+            <p className="rounded-sm border border-ink/10 bg-card p-6 text-center font-body text-sm text-ink/70">
               Todavía no hay pedidos.
             </p>
           ) : (

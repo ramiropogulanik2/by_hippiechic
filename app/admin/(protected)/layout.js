@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import LogoutButton from "@/components/admin/LogoutButton";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -29,10 +30,28 @@ export default async function AdminLayout({ children }) {
 
   return (
     <div className="flex min-h-screen flex-1 flex-col bg-sand">
-      <header className="bg-ink text-sand">
+      {/* border-b-2 caramel: mismo acento de color que se usa en todo el
+          sitio público, para que el admin no se sienta un producto aparte —
+          es solo una línea, no toca tamaños de click ni espaciado de nada
+          debajo. */}
+      <header className="border-b-2 border-caramel bg-ink text-sand">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <Link href="/admin" className="font-accent text-xl tracking-wide">
-            Hippie &amp; Chic — Admin
+          {/* Mismo logo real del header público (Fase 15), invertido a
+              blanco con el mismo truco que components/LogoMarquee.jsx: es
+              ink sobre transparente, ilegible tal cual sobre el fondo oscuro
+              del admin. "Admin" al lado en Caveat para no perder la
+              distinción con el sitio público de un vistazo. */}
+          <Link href="/admin" className="flex shrink-0 items-center gap-2">
+            <Image
+              src="/hippiechic-logo-v2.png"
+              alt="Hippie & Chic"
+              width={582}
+              height={190}
+              className="h-7 w-auto [filter:brightness(0)_invert(1)]"
+            />
+            <span className="font-accent text-lg tracking-wide text-sand/70">
+              Admin
+            </span>
           </Link>
 
           {/* max-w-full + overflow-x-auto: en mobile los 4 links + el badge no

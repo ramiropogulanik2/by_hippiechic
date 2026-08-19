@@ -118,7 +118,7 @@ export default function VariantMatrixBuilder({ variants = [], onChange }) {
           </div>
         </div>
 
-        <p className="text-xs text-ink/60">
+        <p className="text-xs text-ink/70">
           Usá el modo manual para talles o medidas que no están en las listas
           predefinidas.
         </p>
@@ -149,7 +149,7 @@ export default function VariantMatrixBuilder({ variants = [], onChange }) {
 
             <div className="overflow-x-auto rounded-sm border border-ink/10">
               <table className="w-full min-w-96 text-sm">
-                <thead className="bg-sand/60 text-left text-xs text-ink/60">
+                <thead className="bg-sand/60 text-left text-xs text-ink/70">
                   <tr>
                     <th className="px-3 py-2 font-medium">Talle</th>
                     <th className="px-3 py-2 font-medium">Color</th>

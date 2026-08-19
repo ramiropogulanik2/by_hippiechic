@@ -151,7 +151,7 @@ export default function ProductVariantSelector({
               : "Sin stock disponible"}
           </p>
         ) : (
-          <p className="text-sm text-ink/60">
+          <p className="text-sm text-ink/70">
             {stock === 1 ? "Última unidad disponible" : `Stock: ${stock}`}
           </p>
         )}

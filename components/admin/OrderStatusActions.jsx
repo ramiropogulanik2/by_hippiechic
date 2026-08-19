@@ -74,7 +74,7 @@ export default function OrderStatusActions({ orderId, status }) {
           Revertir a pendiente
         </button>
 
-        <p className="text-xs text-ink/60">
+        <p className="text-xs text-ink/70">
           Revertir devuelve al stock las unidades que se habían descontado al
           confirmar.
         </p>
@@ -97,7 +97,7 @@ export default function OrderStatusActions({ orderId, status }) {
         Volver a pendiente
       </button>
 
-      <p className="text-xs text-ink/60">
+      <p className="text-xs text-ink/70">
         Este pedido no descontó stock, así que volver a pendiente no modifica el
         inventario.
       </p>

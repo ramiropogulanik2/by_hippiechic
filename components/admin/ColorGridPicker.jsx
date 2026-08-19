@@ -53,7 +53,7 @@ export default function ColorGridPicker({ selectedColors = [], onChange }) {
 
               <span
                 className={`text-center text-[11px] leading-tight ${
-                  isSelected ? "font-medium text-ink" : "text-ink/60"
+                  isSelected ? "font-medium text-ink" : "text-ink/70"
                 }`}
               >
                 {color.name}
