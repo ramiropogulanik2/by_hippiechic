@@ -16,7 +16,7 @@ const POLICY_LINKS = [
 ];
 
 const linkClass =
-  "underline-offset-4 transition-colors hover:text-caramel hover:underline";
+  "link-underline font-body text-[11px] uppercase tracking-[0.14em] text-sand/75 transition-colors hover:text-ember";
 
 export default function Footer() {
   const [openPolicyKey, setOpenPolicyKey] = useState(null);
@@ -32,23 +32,27 @@ export default function Footer() {
 
   return (
     <footer className="bg-ink text-sand">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 border-b border-sand/10 px-4 py-14 text-center sm:px-6">
-        <Eyebrow>¿Tenés dudas?</Eyebrow>
+      {/* Bloque de contacto: el CTA es lo único centrado del footer, para que
+          funcione como cierre del recorrido. El resto va en grilla, alineado
+          a la izquierda, más de directorio que de tarjeta. */}
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-5 px-4 py-20 text-center sm:px-6 sm:py-24 lg:px-8">
+        {/* tone="dark" cambia también la línea, no solo el texto: con el
+            className suelto la rayita quedaba en óxido oscuro, invisible
+            sobre el espresso del footer. */}
+        <Eyebrow tone="dark" className="mx-auto">
+          ¿Tenés dudas?
+        </Eyebrow>
 
-        <h2 className="font-display text-3xl font-semibold sm:text-4xl">
-          Para consultas
+        <h2 className="max-w-2xl font-display text-3xl leading-tight sm:text-5xl">
+          Escribinos y te ayudamos a <span className="font-accent">elegir</span>
         </h2>
-
-        <p className="font-body text-sm text-sand/70">
-          Escribinos y te ayudamos a elegir.
-        </p>
 
         {whatsappUrl && (
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-2 rounded-full bg-sand px-6 py-3 font-body text-sm font-medium text-ink transition-opacity hover:opacity-90"
+            className="group mt-3 inline-flex items-center gap-2.5 rounded-full bg-sand px-8 py-4 font-body text-xs font-semibold uppercase tracking-[0.16em] text-ink transition-colors hover:bg-ember"
           >
             <FaWhatsapp className="h-4 w-4" />
             Escribinos por WhatsApp
@@ -56,21 +60,19 @@ export default function Footer() {
         )}
       </div>
 
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 border-b border-sand/10 px-4 py-14 text-center sm:px-6">
-        <div className="flex flex-col items-center gap-3">
-          <p className="font-accent text-2xl tracking-wide">HIPPIE &amp; CHIC</p>
+      <div className="mx-auto grid max-w-7xl gap-10 border-t border-sand/10 px-4 py-14 sm:px-6 md:grid-cols-[1fr_auto] md:items-start lg:px-8">
+        <div className="flex flex-col gap-5">
+          <p className="font-accent text-3xl tracking-wide">Hippie &amp; Chic</p>
 
-          <Eyebrow className="mb-0">Seguime en:</Eyebrow>
-
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-4">
             <a
               href="https://www.instagram.com/by_hippiechic"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="text-sand/80 transition-colors hover:text-caramel"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-sand/20 text-sand/80 transition-colors hover:border-ember hover:text-ember"
             >
-              <FaInstagram className="h-6 w-6" />
+              <FaInstagram className="h-[18px] w-[18px]" />
             </a>
 
             {/* TODO: confirmar URL exacta de Facebook con Rami antes de
@@ -81,14 +83,18 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="text-sand/80 transition-colors hover:text-caramel"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-sand/20 text-sand/80 transition-colors hover:border-ember hover:text-ember"
             >
-              <FaFacebook className="h-6 w-6" />
+              <FaFacebook className="h-[18px] w-[18px]" />
             </a>
           </div>
+
+          <p className="font-body text-sm text-sand/70">
+            Envíos a todo el país · Córdoba, Argentina
+          </p>
         </div>
 
-        <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-body text-sm text-sand/80">
+        <nav className="flex flex-col items-start gap-3 md:items-end">
           {POLICY_LINKS.map((link) => (
             <button
               key={link.key}
@@ -110,10 +116,9 @@ export default function Footer() {
         </nav>
       </div>
 
-      <div className="mx-auto px-4 py-6 text-center sm:px-6">
-        <p className="font-body text-xs text-sand/70">
-          © Hippie &amp; Chic {new Date().getFullYear()}. Todos los derechos
-          reservados.
+      <div className="mx-auto max-w-7xl border-t border-sand/10 px-4 py-6 sm:px-6 lg:px-8">
+        <p className="font-body text-[11px] uppercase tracking-[0.14em] text-sand/60">
+          © Hippie &amp; Chic {new Date().getFullYear()}
         </p>
       </div>
 

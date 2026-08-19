@@ -1,21 +1,18 @@
-import { Cormorant_Garamond, Work_Sans, Caveat } from "next/font/google";
+import { Fraunces, Karla } from "next/font/google";
 import "./globals.css";
 
-const cormorantGaramond = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  weight: ["400", "600"],
+// Fraunces es variable y expone dos ejes además del grosor: SOFT (redondea
+// los terminales) y WONK (glifos alternativos inclinados). Hay que pedirlos
+// explícitamente con `axes`, si no next/font sirve solo el eje de peso y
+// las font-variation-settings de globals.css no tendrían efecto.
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
+  axes: ["SOFT", "WONK", "opsz"],
 });
 
-const workSans = Work_Sans({
-  variable: "--font-work-sans",
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-});
-
-const caveat = Caveat({
-  variable: "--font-caveat",
-  weight: ["500", "600"],
+const karla = Karla({
+  variable: "--font-karla",
   subsets: ["latin"],
 });
 
@@ -28,9 +25,9 @@ export const metadata = {
 // themeColor va en un export "viewport" aparte, no dentro de "metadata": Next
 // dejó de aceptarlo ahí hace varias versiones. Sin esto, en mobile la barra
 // de direcciones/UI del navegador toma un color por default en vez de
-// combinar con el sitio (token "sand").
+// combinar con el sitio.
 export const viewport = {
-  themeColor: "#ede4d3",
+  themeColor: "#f7f2ea",
 };
 
 export default function RootLayout({ children }) {
@@ -41,7 +38,7 @@ export default function RootLayout({ children }) {
       data-scroll-behavior="smooth"
     >
       <body
-        className={`${cormorantGaramond.variable} ${workSans.variable} ${caveat.variable} min-h-full flex flex-col font-body`}
+        className={`${fraunces.variable} ${karla.variable} min-h-full flex flex-col font-body`}
       >
         {children}
       </body>

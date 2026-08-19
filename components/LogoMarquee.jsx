@@ -1,8 +1,8 @@
 import Image from "next/image";
 
-// Puramente decorativo (separador entre secciones): el logo real y
-// accesible ya está en el Header, así que toda la banda se saca del árbol
-// de accesibilidad y cada imagen lleva alt vacío.
+// Puramente decorativo (separador entre secciones): el logo real y accesible
+// ya está en el Header, así que toda la banda se saca del árbol de
+// accesibilidad y cada imagen lleva alt vacío.
 const REPEAT_COUNT = 8;
 const repeats = Array.from({ length: REPEAT_COUNT });
 
@@ -22,9 +22,7 @@ function LogoRow() {
           // (gap no deja espacio después del último hijo), y el track ya no
           // mide exactamente el doble de una tanda — el -50% del keyframe
           // queda corrido medio espaciado y se nota un salto en el loop.
-          // Con margin en cada uno (incluido el último) todos los huecos
-          // miden igual y el track sí es exactamente 2x una tanda.
-          className="h-9 w-auto mr-16 [filter:brightness(0)_invert(1)]"
+          className="mr-20 h-7 w-auto opacity-55 [filter:brightness(0)_invert(1)]"
         />
       ))}
     </div>
@@ -33,8 +31,11 @@ function LogoRow() {
 
 export default function LogoMarquee() {
   return (
+    // Los logos van al 55% de opacidad y más chicos que antes: la banda
+    // funciona como textura de marca que cierra el hero, no como un cartel
+    // que compite con las fotos de arriba.
     <div aria-hidden="true" className="group overflow-hidden bg-ink">
-      <div className="flex h-16 w-max items-center animate-[marquee-logo_25s_linear_infinite] group-hover:[animation-play-state:paused]">
+      <div className="flex h-14 w-max items-center animate-[marquee-logo_32s_linear_infinite] group-hover:[animation-play-state:paused]">
         <LogoRow />
         <LogoRow />
       </div>

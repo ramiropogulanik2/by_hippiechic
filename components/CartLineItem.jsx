@@ -14,18 +14,18 @@ export default function CartLineItem({ item }) {
   const hasVariantInfo = Boolean(item.size || item.color);
 
   return (
-    <li className="flex gap-4 border-b border-ink/10 py-5">
+    <li className="flex gap-4 border-b border-ink/10 py-6 sm:gap-6">
       <Link
         href={`/producto/${item.productSlug}`}
-        className="relative aspect-[3/4] w-20 shrink-0 overflow-hidden rounded-sm bg-sand"
+        className="group relative aspect-[3/4] w-20 shrink-0 overflow-hidden rounded-sm bg-dune sm:w-24"
       >
         {item.imageUrl && (
           <Image
             src={item.imageUrl}
             alt=""
             fill
-            sizes="80px"
-            className="object-cover"
+            sizes="96px"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         )}
       </Link>
@@ -40,22 +40,22 @@ export default function CartLineItem({ item }) {
           </Link>
 
           {hasVariantInfo && (
-            <p className="text-xs text-ink/70">
+            <p className="font-body text-xs uppercase tracking-[0.12em] text-ink/70">
               {[
-                item.size ? `Talle: ${item.size}` : null,
-                item.color ? `Color: ${item.color}` : null,
+                item.size ? `Talle ${item.size}` : null,
+                item.color,
               ]
                 .filter(Boolean)
                 .join(" · ")}
             </p>
           )}
 
-          <p className="text-xs text-ink/70">
+          <p className="font-body text-xs text-ink/70">
             {formatPrice(item.unitPrice)} c/u
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="mt-auto flex items-center gap-3">
           <QuantityStepper
             quantity={item.quantity}
             min={0}
@@ -71,14 +71,14 @@ export default function CartLineItem({ item }) {
             type="button"
             onClick={() => removeItem(item.variantId)}
             aria-label={`Eliminar ${item.productName}`}
-            className="text-ink/50 transition-colors hover:text-rose"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-ink/50 transition-colors hover:bg-rose/10 hover:text-rose"
           >
             <Trash2 className="h-4 w-4" strokeWidth={1.5} />
           </button>
         </div>
       </div>
 
-      <p className="shrink-0 self-start font-body text-sm font-bold">
+      <p className="shrink-0 self-start font-display text-base font-semibold tabular-nums">
         {formatPrice(item.unitPrice * item.quantity)}
       </p>
     </li>

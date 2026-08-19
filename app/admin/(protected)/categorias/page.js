@@ -84,7 +84,7 @@ export default async function AdminCategoriesPage() {
                 <span
                   className={`rounded-full px-3 py-1 text-xs font-medium ${
                     category.is_visible
-                      ? "bg-caramel/20 text-caramel"
+                      ? "bg-caramel/20 text-caramel-deep"
                       : "bg-ink/10 text-ink/70"
                   }`}
                 >

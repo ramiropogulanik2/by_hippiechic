@@ -67,28 +67,31 @@ export default function CartPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-      <Link href="/" className="text-sm transition-colors hover:text-caramel">
+      <Link
+        href="/"
+        className="link-underline font-body text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors hover:text-caramel"
+      >
         ← Seguir comprando
       </Link>
 
-      <h1 className="mb-8 mt-6 font-display text-3xl font-semibold sm:text-4xl">
+      <h1 className="mb-10 mt-6 font-display text-4xl leading-none sm:text-6xl">
         Tu carrito
       </h1>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center gap-4 py-20 text-center">
+        <div className="flex flex-col items-center gap-5 py-24 text-center">
           {/* El pedido recién confirmado vacía el carrito, así que este es el
               único lugar donde puede verse un error posterior al guardado. */}
           {errorMessage && (
-            <p className="text-sm text-rose">{errorMessage}</p>
+            <p className="font-body text-sm text-rose">{errorMessage}</p>
           )}
 
-          <p className="font-accent text-2xl text-ink/60">
+          <p className="font-accent text-3xl text-ink/70">
             Tu carrito está vacío
           </p>
           <Link
             href="/"
-            className="rounded-full bg-ink px-6 py-3 font-body text-sm font-medium text-sand transition-opacity hover:opacity-90"
+            className="rounded-full bg-ink px-8 py-4 font-body text-xs font-semibold uppercase tracking-[0.16em] text-sand transition-colors hover:bg-caramel"
           >
             Ver catálogo
           </Link>
@@ -105,17 +108,22 @@ export default function CartPage() {
             ))}
           </ul>
 
-          <aside className="flex flex-col rounded-sm border border-ink/10 bg-card p-6 lg:sticky lg:top-28 lg:self-start">
-            <div className="flex items-baseline justify-between">
-              <span className="font-body text-sm font-medium">Total</span>
-              <span className="font-display text-3xl font-semibold">
+          <aside className="flex flex-col rounded-sm border border-ink/10 bg-card p-7 lg:sticky lg:top-28 lg:self-start">
+            <div className="flex items-baseline justify-between border-b border-ink/10 pb-5">
+              <span className="font-body text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/70">
+                Total
+              </span>
+              <span className="font-display text-3xl font-semibold tabular-nums">
                 {formatPrice(total)}
               </span>
             </div>
 
-            <div className="mt-8 flex flex-col gap-4">
+            <div className="mt-7 flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="customer-name" className="text-sm font-medium">
+                <label
+                  htmlFor="customer-name"
+                  className="font-body text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/70"
+                >
                   Nombre
                 </label>
                 <input
@@ -129,7 +137,10 @@ export default function CartPage() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="customer-phone" className="text-sm font-medium">
+                <label
+                  htmlFor="customer-phone"
+                  className="font-body text-[11px] font-semibold uppercase tracking-[0.14em] text-ink/70"
+                >
                   Teléfono (opcional)
                 </label>
                 <input
@@ -144,23 +155,23 @@ export default function CartPage() {
             </div>
 
             {errorMessage && (
-              <p className="mt-4 text-sm text-rose">{errorMessage}</p>
+              <p className="mt-4 font-body text-sm text-rose">{errorMessage}</p>
             )}
 
             <button
               type="button"
               onClick={handleSubmitOrder}
               disabled={isSubmitting}
-              className={`mt-6 w-full rounded-full bg-ink px-6 py-4 font-body text-sm font-medium text-sand transition-opacity ${
+              className={`mt-7 w-full rounded-full px-6 py-4 font-body text-xs font-semibold uppercase tracking-[0.16em] text-sand transition-colors ${
                 isSubmitting
-                  ? "cursor-not-allowed opacity-60"
-                  : "hover:opacity-90"
+                  ? "cursor-not-allowed bg-ink/40"
+                  : "bg-ink hover:bg-caramel"
               }`}
             >
               {isSubmitting ? "Enviando pedido..." : "Hacer pedido"}
             </button>
 
-            <p className="mt-3 text-center text-xs text-ink/70">
+            <p className="mt-4 text-center font-body text-xs text-ink/70">
               El pedido se confirma por WhatsApp
             </p>
           </aside>

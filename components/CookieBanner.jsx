@@ -28,9 +28,9 @@ export default function CookieBanner() {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-sand/10 bg-ink px-4 py-4 text-sand sm:px-6">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 sm:flex-row">
-        <p className="text-center text-sm text-sand/80 sm:text-left">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-sand/10 bg-ink/95 px-4 py-4 text-sand backdrop-blur-md sm:px-6">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 sm:flex-row lg:px-2">
+        <p className="text-center font-body text-sm text-sand/80 sm:text-left">
           Al navegar por este sitio aceptás el uso de cookies para mejorar tu
           experiencia.
         </p>
@@ -38,7 +38,7 @@ export default function CookieBanner() {
         <button
           type="button"
           onClick={handleAccept}
-          className="shrink-0 rounded-full bg-sand px-6 py-2 font-body text-sm font-medium text-ink transition-opacity hover:opacity-90"
+          className="shrink-0 rounded-full bg-sand px-7 py-2.5 font-body text-[11px] font-semibold uppercase tracking-[0.16em] text-ink transition-colors hover:bg-ember"
         >
           Entendido
         </button>

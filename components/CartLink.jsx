@@ -32,12 +32,14 @@ export default function CartLink() {
               totalQuantity === 1 ? "artículo" : "artículos"
             }`
       }
-      className="relative inline-flex text-ink transition-colors hover:text-caramel"
+      // Sin color propio: hereda el del <nav>, que cambia según el header
+      // esté sobre el hero (claro) o sobre fondo sólido (oscuro).
+      className="relative inline-flex transition-colors hover:text-caramel"
     >
       <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
 
       {totalQuantity > 0 && (
-        <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-caramel px-1 text-[10px] font-medium leading-none text-sand">
+        <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-caramel px-1 font-body text-[10px] font-semibold leading-none text-sand">
           {totalQuantity}
         </span>
       )}

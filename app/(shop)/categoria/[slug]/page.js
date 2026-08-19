@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/Breadcrumb";
 import ProductCard from "@/components/ProductCard";
+import Reveal from "@/components/ui/Reveal";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function CategoryPage({ params }) {
@@ -61,24 +62,34 @@ export default async function CategoryPage({ params }) {
         />
       </div>
 
-      <h1 className="mb-10 font-display text-3xl font-semibold sm:text-4xl">
-        {category.name}
-      </h1>
+      {/* El contador de piezas al lado del título da contexto de inmediato
+          (una categoría con 2 prendas se lee distinto que una con 20) y de
+          paso equilibra el peso del título en pantallas anchas. */}
+      <div className="mb-12 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-ink/10 pb-6">
+        <h1 className="font-display text-4xl leading-none sm:text-6xl">
+          {category.name}
+        </h1>
+        <span className="font-body text-xs uppercase tracking-[0.18em] text-ink/70">
+          {productList.length}{" "}
+          {productList.length === 1 ? "pieza" : "piezas"}
+        </span>
+      </div>
 
       {productList.length === 0 ? (
-        <p className="py-16 text-center font-accent text-2xl text-ink/60">
+        <p className="py-20 text-center font-accent text-3xl text-ink/70">
           Todavía no hay productos en esta categoría
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {productList.map((product) => (
-            <ProductCard
-              key={product.id}
-              name={product.name}
-              price={product.price}
-              imageUrl={firstImageByProduct.get(product.id) ?? null}
-              slug={product.slug}
-            />
+        <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {productList.map((product, index) => (
+            <Reveal key={product.id} delay={(index % 5) * 0.06}>
+              <ProductCard
+                name={product.name}
+                price={product.price}
+                imageUrl={firstImageByProduct.get(product.id) ?? null}
+                slug={product.slug}
+              />
+            </Reveal>
           ))}
         </div>
       )}

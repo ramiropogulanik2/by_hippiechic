@@ -115,7 +115,7 @@ export default async function AdminProductsPage() {
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-medium ${
                       product.is_published
-                        ? "bg-caramel/20 text-caramel"
+                        ? "bg-caramel/20 text-caramel-deep"
                         : "bg-ink/10 text-ink/70"
                     }`}
                   >

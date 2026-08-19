@@ -62,21 +62,31 @@ export default async function ProductPage({ params }) {
         <Breadcrumb items={breadcrumbItems} />
       </div>
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-14">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
         <ProductGallery images={images ?? []} productName={product.name} />
 
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-3">
-            <h1 className="font-display text-3xl font-semibold sm:text-4xl">
+        {/* Sticky en desktop: con galerías de varias fotos, el panel de
+            compra se iba de pantalla al scrollear y había que volver arriba
+            para elegir el talle. */}
+        <div className="flex flex-col gap-7 lg:sticky lg:top-28 lg:self-start">
+          <div className="flex flex-col gap-4 border-b border-ink/10 pb-7">
+            {category && (
+              <p className="font-body text-[11px] font-semibold uppercase tracking-[0.22em] text-caramel">
+                {category.name}
+              </p>
+            )}
+
+            <h1 className="font-display text-3xl leading-tight sm:text-5xl">
               {product.name}
             </h1>
-            <p className="font-body text-2xl font-bold">
+
+            <p className="font-display text-2xl font-semibold sm:text-3xl">
               {formatPrice(product.price)}
             </p>
           </div>
 
           {product.description && (
-            <p className="font-body text-base leading-relaxed text-ink/80">
+            <p className="max-w-prose font-body text-base leading-relaxed text-ink/80">
               {product.description}
             </p>
           )}
@@ -93,11 +103,11 @@ export default async function ProductPage({ params }) {
           {/* Refuerza la decisión de compra justo después del CTA, que es
               donde más se necesita — el detalle completo de cada punto ya
               está a un click en el footer, esto es solo el resumen. */}
-          <ul className="flex flex-col gap-3 rounded-sm border border-ink/10 bg-card p-4">
+          <ul className="flex flex-col gap-3.5 border-t border-ink/10 pt-7">
             {TRUST_POINTS.map(({ Icon, label }) => (
               <li
                 key={label}
-                className="flex items-center gap-3 text-sm text-ink/80"
+                className="flex items-center gap-3 font-body text-sm text-ink/80"
               >
                 <Icon
                   className="h-4 w-4 shrink-0 text-caramel"
@@ -111,10 +121,10 @@ export default async function ProductPage({ params }) {
       </div>
 
       {category && (
-        <div className="mt-14">
+        <div className="mt-20 border-t border-ink/10 pt-8">
           <Link
             href={`/categoria/${category.slug}`}
-            className="text-sm transition-colors hover:text-caramel"
+            className="link-underline font-body text-xs font-semibold uppercase tracking-[0.16em] transition-colors hover:text-caramel"
           >
             ← Volver a {category.name}
           </Link>

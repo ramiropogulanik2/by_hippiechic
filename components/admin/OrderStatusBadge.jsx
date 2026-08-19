@@ -1,7 +1,10 @@
+// Fondos plenos con texto claro encima: el arcilla normal deja el texto en
+// 3.3:1, la variante oscurecida lo sube a 5.4:1 sin cambiar el código de
+// color de cada estado.
 const STATUS_STYLES = {
   pendiente: "bg-caramel text-sand",
   confirmado: "bg-ink text-sand",
-  rechazado: "bg-rose text-sand",
+  rechazado: "bg-rose-deep text-sand",
 };
 
 const STATUS_LABELS = {

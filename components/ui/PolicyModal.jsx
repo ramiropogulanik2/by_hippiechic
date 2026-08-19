@@ -30,7 +30,7 @@ export default function PolicyModal({ isOpen, onClose, title, children }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       {/* stopPropagation: sin esto, cualquier click adentro del modal
@@ -51,11 +51,11 @@ export default function PolicyModal({ isOpen, onClose, title, children }) {
           <X className="h-5 w-5" strokeWidth={1.5} />
         </button>
 
-        <h2 className="pr-8 font-display text-2xl font-semibold text-ink">
+        <h2 className="pr-8 font-display text-2xl leading-tight text-ink sm:text-3xl">
           {title}
         </h2>
 
-        <div className="mt-4 overflow-y-auto font-body text-sm leading-relaxed text-ink/80">
+        <div className="mt-5 overflow-y-auto font-body text-sm leading-relaxed text-ink/80">
           {children}
         </div>
       </div>

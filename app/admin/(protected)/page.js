@@ -179,8 +179,8 @@ export default async function AdminHomePage() {
                     <span
                       className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${
                         variant.stock === 0
-                          ? "bg-rose text-sand"
-                          : "bg-caramel/20 text-caramel"
+                          ? "bg-rose-deep text-sand"
+                          : "bg-caramel/20 text-caramel-deep"
                       }`}
                     >
                       {variant.stock} en stock

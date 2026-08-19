@@ -1,19 +1,51 @@
 @import "tailwindcss";
 
+/* =====================================================
+   PALETA — "Cuero, óxido y última luz"
+   =====================================================
+   El criterio que cambió respecto de la paleta anterior: antes el fondo era
+   un beige medio (#ede4d3) y el acento un caramel desaturado. Las prendas
+   reales de la marca son cueros, gamuzas y denim fotografiados sobre fondos
+   claros — un fondo beige medio les baja el contraste y las apaga.
+   Ahora el fondo es papel casi blanco (las fotos son las protagonistas) y
+   todo el color se concentra en un óxido saturado que sí tiene presencia. */
 @theme {
-  --color-sand: #ede4d3;
-  --color-ink: #241f1a;
-  --color-caramel: #b08d57;
-  --color-rose: #c98f82;
-  --color-card: #fffcf7;
+  /* Superficies, de más clara a más tonal */
+  --color-card: #fffcf8; /* elevada (cards, panels) */
+  --color-sand: #f7f2ea; /* fondo de página — papel cálido */
+  --color-dune: #eadfd0; /* bloque tonal, para dar ritmo entre secciones */
+
+  /* Tinta */
+  --color-ink: #2b211c; /* espresso: más cálido y profundo que un negro */
+
+  /* Acentos.
+     Son dos versiones del mismo óxido porque uno solo no alcanza para
+     ambos fondos: sobre papel hace falta el oscuro (4.4:1) y sobre
+     espresso el claro (5.8:1). Usar el mismo en los dos deja uno ilegible. */
+  --color-caramel: #b4562e; /* óxido — acento sobre fondo claro */
+  --color-ember: #d98a5f; /* óxido luminoso — acento sobre fondo oscuro */
+  --color-olive: #6b6a4b; /* oliva apagado — secundario, rompe el monotono tierra */
+  --color-rose: #c0705c; /* arcilla — errores y acciones destructivas */
+
+  /* Versiones oscurecidas para los chips de estado del admin. Un chip pinta
+     el fondo con el acento al 15-20% y el texto con el acento pleno encima:
+     ahí el óxido normal cae a 3.6:1 y el arcilla a 3.3:1, por debajo del
+     4.5:1 que pide texto de 12px. Estas variantes suben a 5.6:1 y 5.4:1
+     manteniendo el mismo código de color. */
+  --color-caramel-deep: #7d3a1d;
+  --color-rose-deep: #9c4b38;
 }
 
 /* `inline` para que las utilidades resuelvan la variable que next/font
    define en el <body>, en vez de una indirección extra. */
 @theme inline {
-  --font-display: var(--font-cormorant);
-  --font-body: var(--font-work-sans);
-  --font-accent: var(--font-caveat);
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-karla);
+  /* font-accent ya no es una manuscrita aparte: es la misma Fraunces, que
+     al ser variable trae su propio carácter vía los ejes SOFT/WONK (ver
+     .font-accent más abajo). Una familia menos, más rango dentro de la que
+     queda. */
+  --font-accent: var(--font-fraunces);
 }
 
 body {
@@ -21,27 +53,79 @@ body {
   color: var(--color-ink);
 }
 
+/* Fraunces es variable y trae dos ejes que no son grosor:
+   SOFT redondea los terminales (menos severa, más artesanal) y WONK
+   cambia por glifos alternativos con inclinaciones raras. Subidos al
+   máximo en los momentos de acento, dan el carácter setentoso/manuscrito
+   que antes aportaba una fuente aparte. */
+.font-accent {
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-style: italic;
+}
+
+/* Los títulos usan la misma familia pero SIN wonk: se queda editorial y
+   legible en tamaños grandes, sin la inclinación de los acentos. */
+.font-display {
+  font-variation-settings: "SOFT" 40, "WONK" 0;
+}
+
 /* Foco visible por teclado en todos los botones y links del sitio (público y
    admin), de una sola vez en vez de repetir la clase en cada componente.
    :focus-visible (no :focus) para que solo aparezca con teclado/lector de
-   pantalla, no en cada click de mouse. Los inputs/selects quedan afuera a
-   propósito: ya tienen su propio tratamiento de foco (focus:border-caramel
-   focus:outline-none, ver inputClass en los formularios del admin). */
+   pantalla, no en cada click de mouse. */
 a:focus-visible,
 button:focus-visible {
   outline: 2px solid var(--color-caramel);
   outline-offset: 2px;
 }
 
-/* Banda de logos en movimiento (components/LogoMarquee.jsx). Mismo truco que
-   el marquee del hero (Fase 11.6, ya eliminado): el track duplica el set de
-   logos una vez y anima 0 -> -50%, así el segundo tramo es idéntico al
-   primero y el loop no se nota. */
+/* Banda de logos en movimiento (components/LogoMarquee.jsx): el track
+   duplica el set de logos una vez y anima 0 -> -50%, así el segundo tramo
+   es idéntico al primero y el loop no se nota. */
 @keyframes marquee-logo {
   from {
     transform: translateX(0);
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+/* Subrayado que crece desde la izquierda al pasar el mouse. Se usa en los
+   links de navegación: es más de marca que un `underline` que aparece de
+   golpe, y no mueve el layout porque vive en un ::after absoluto. */
+.link-underline {
+  position: relative;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Quien pidió menos movimiento en el sistema operativo no debería recibir
+   ninguno: apaga el marquee y cualquier transición larga. Las animaciones
+   de motion se apagan aparte, con su propio hook (ver components/ui/Reveal). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
