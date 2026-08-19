@@ -385,4 +385,18 @@ Siguiendo el mismo formato de la auditoría: PASO 1 y 2 mecánicos (contraste), 
 
 ### Notas técnicas de la Fase 18
 - Verificación: se reconstruyó la ruta temporal de QA (app/qa-mobile-admin, renderiza las Server Components del admin fuera de /admin sin necesitar sesión) para confirmar en el navegador el logo del header, la línea caramel, las 4 cards con ícono, y el bloque de confianza en una página de producto real — y se borró antes de commitear (confirmado dos veces: Glob y listado directo de app/, ninguno encuentra la carpeta).
+
+## Fase 19 — Filtros de categoría (talle, orden, buscador)
+- Filtros reflejados en la URL (searchParams): `talle` (lista separada por comas, multi-select), `orden` (`recientes` default / `precio-asc` / `precio-desc`), `buscar` (texto libre)
+- Talles disponibles calculados dinámicamente por categoría (no una lista fija) — se recalculan sobre el universo completo de la categoría, no sobre el resultado ya filtrado, así elegir un talle no hace desaparecer las opciones de los demás
+- components/CategoryFilters.jsx: pills de talle (mismo estilo que ProductVariantSelector), select de orden, buscador con debounce de 350ms
+- Estado vacío específico cuando los filtros no arrojan resultados ("No se encontraron productos con estos filtros"), con link para limpiarlos — distinto del estado vacío general ("Todavía no hay productos en esta categoría") que sigue existiendo cuando la categoría está vacía sin que haya ningún filtro puesto
+
+### Notas técnicas de la Fase 19
+- `router.replace` para el buscador (no deja entradas de historial por cada letra tipeada) vs `router.push` para talle/orden (son decisiones concretas, tiene sentido que "atrás" las deshaga una por una). Ambos con `{ scroll: false }` para no saltar al toque de la página al cambiar un filtro.
+- El talle filtra en dos pasos porque Supabase/PostgREST no deja filtrar la tabla principal por "algún hijo cumple X" en una sola consulta: primero se resuelve qué `product_id` tienen alguna variante con los talles pedidos (`product_variants` con embed `products!inner(category_id)` para poder filtrar por categoría desde ahí), después se aplica `.in('id', esosIds)` sobre la query de productos. Si esa lista da vacía, se corta ahí mismo sin llegar a consultar `products` — no hace falta, ya se sabe que el resultado es vacío.
+- El input de búsqueda tiene un problema clásico de sincronización: si el efecto que sincroniza el input con la URL corriera siempre, pisaría lo que la persona está tipeando en cuanto el debounce actualizara la URL (la propia actualización dispara el efecto). Se resolvió con un ref (`isOwnUpdate`) que marca "este cambio de URL lo hice yo mismo" antes del `router.replace`, así el efecto de sincronización solo reacciona a cambios externos de verdad (botón atrás/adelante del navegador, o "Limpiar filtros").
+- Verificado en el navegador: combinar los 3 filtros a la vez arma la URL correcta (`?talle=38&orden=precio-asc&buscar=jean`) y devuelve productos que cumplen los tres (9 de 10 jeans, todos con "jean" en el nombre, ordenados $46.000→$96.000 ascendente). Categoría sin talles cargados (Carteras): la sección de talle no aparece, sin overflow ni error. Talle inexistente en la categoría (`?talle=99`): cae directo al estado "sin resultados" sin romper. "Limpiar filtros" resetea la URL y el input a la vez.
+- npm run build sin errores.
+- Pendiente de confirmar con la dueña: "de palta" en el pedido original no se entendió a qué se refería (no hay ningún filtro de "palta" pedido en el resto del mensaje) — se avisa en vez de adivinar. Si era un typo por "talle", ya está cubierto; si era otra cosa (color, precio como filtro con rango en vez de solo orden), se agrega aparte.
 - npm run build sin errores en cada paso.
