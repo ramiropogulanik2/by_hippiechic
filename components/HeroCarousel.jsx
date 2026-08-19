@@ -33,12 +33,10 @@ export default function HeroCarousel({ images = [] }) {
 
   const hasImages = images.length > 0;
 
-  // La entrada del texto va escalonada (eyebrow → título → botón) en vez de
-  // aparecer todo junto: guía la lectura en el orden en que importa.
   const textReveal = prefersReducedMotion
     ? {}
     : {
-        initial: { opacity: 0, y: 24 },
+        initial: { opacity: 0, y: 16 },
         animate: { opacity: 1, y: 0 },
       };
 
@@ -79,50 +77,28 @@ export default function HeroCarousel({ images = [] }) {
           pointer-events-none para no bloquear el arrastre de Embla. */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/25 to-ink/5" />
 
-      {/* Texto abajo a la izquierda, no centrado: es la convención editorial
-          de moda y deja el centro libre para que se vea la prenda. */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 px-4 pb-14 sm:px-6 sm:pb-20 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <motion.p
-            {...textReveal}
-            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-4 flex w-fit items-center gap-3 font-body text-[11px] font-semibold uppercase tracking-[0.22em] text-ember"
-          >
-            <span aria-hidden="true" className="h-px w-7 bg-ember/60" />
-            Córdoba · Argentina
-          </motion.p>
+      {/* Centrado, mismo texto y tipografía que antes de este experimento —
+          se probó movido abajo-a-la-izquierda con copy nuevo y no convenció,
+          así que se revirtió puntualmente esta parte. El resto del hero
+          (fotos a altura de viewport, degradado, header transparente encima)
+          sigue del rediseño. */}
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-6 px-4 text-center">
+        <motion.p
+          {...textReveal}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="font-handwritten text-3xl text-sand drop-shadow-sm sm:text-5xl"
+        >
+          Boho-chic · Envíos a todo el país
+        </motion.p>
 
-          <motion.h1
-            {...textReveal}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-3xl font-classic text-4xl font-semibold leading-[1.05] text-sand drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)] sm:text-6xl lg:text-7xl"
-          >
-            Piezas con <em className="italic">carácter</em>
-          </motion.h1>
-
-          <motion.div
-            {...textReveal}
-            transition={{ duration: 0.7, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3"
-          >
-            <a
-              href="#categorias"
-              className="pointer-events-auto group inline-flex items-center gap-2 rounded-full bg-sand px-7 py-3.5 font-body text-xs font-semibold uppercase tracking-[0.16em] text-ink transition-colors hover:bg-ember hover:text-ink"
-            >
-              Ver catálogo
-              <span
-                aria-hidden="true"
-                className="transition-transform duration-300 group-hover:translate-x-1"
-              >
-                →
-              </span>
-            </a>
-
-            <p className="font-body text-sm text-sand/80">
-              Envíos a todo el país
-            </p>
-          </motion.div>
-        </div>
+        <motion.a
+          {...textReveal}
+          transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+          href="#categorias"
+          className="pointer-events-auto rounded-full bg-sand px-6 py-3 font-body text-sm font-medium text-ink transition-colors hover:bg-card"
+        >
+          Ver catálogo
+        </motion.a>
       </div>
 
       {/* Puntitos: uno por foto, sobre el degradado. Se ocultan con una sola

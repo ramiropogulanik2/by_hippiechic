@@ -25,7 +25,13 @@ export default function AboutSection() {
             <Eyebrow>Conocé la tienda</Eyebrow>
 
             <h2 className="mb-5 font-classic text-3xl font-semibold leading-tight sm:text-5xl">
-              Detrás de <em className="italic">Hippie &amp; Chic</em>
+              {/* El "&" itálico de Cormorant es un glifo swash muy cargado,
+                  desentona al lado de las letras — se lo saca de la itálica
+                  para que use la forma recta normal. */}
+              Detrás de{" "}
+              <em className="italic">
+                Hippie <span className="not-italic">&amp;</span> Chic
+              </em>
             </h2>
 
             {/* TODO: copy placeholder, falta confirmarlo con la dueña. */}

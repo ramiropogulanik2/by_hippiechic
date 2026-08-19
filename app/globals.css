@@ -49,6 +49,9 @@
   /* Cormorant Garamond, solo para los 3 momentos de marca donde se prefirió
      la serif original a la Fraunces itálica (ver .font-classic). */
   --font-classic: var(--font-cormorant);
+  /* Caveat, solo para el texto del hero (ver components/HeroCarousel.jsx) —
+     se pidió que volviera a ser igual al de antes de este experimento. */
+  --font-handwritten: var(--font-caveat);
 }
 
 body {

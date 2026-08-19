@@ -1,4 +1,4 @@
-import { Cormorant_Garamond, Fraunces, Karla } from "next/font/google";
+import { Caveat, Cormorant_Garamond, Fraunces, Karla } from "next/font/google";
 import "./globals.css";
 
 // Fraunces es variable y expone dos ejes además del grosor: SOFT (redondea
@@ -27,6 +27,15 @@ const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
 });
 
+// Igual que Cormorant arriba: vuelve solo para el texto del hero, que se
+// pidió que quedara igual al de antes de este experimento (manuscrita, no
+// la Fraunces itálica).
+const caveat = Caveat({
+  variable: "--font-caveat",
+  weight: ["500", "600"],
+  subsets: ["latin"],
+});
+
 export const metadata = {
   title: "Hippie & Chic",
   description:
@@ -49,7 +58,7 @@ export default function RootLayout({ children }) {
       data-scroll-behavior="smooth"
     >
       <body
-        className={`${fraunces.variable} ${karla.variable} ${cormorantGaramond.variable} min-h-full flex flex-col font-body`}
+        className={`${fraunces.variable} ${karla.variable} ${cormorantGaramond.variable} ${caveat.variable} min-h-full flex flex-col font-body`}
       >
         {children}
       </body>

@@ -62,8 +62,10 @@ export default function Footer() {
 
       <div className="mx-auto grid max-w-7xl gap-10 border-t border-sand/10 px-4 py-14 sm:px-6 md:grid-cols-[1fr_auto] md:items-start lg:px-8">
         <div className="flex flex-col gap-5">
+          {/* Mismo motivo que en AboutSection: el "&" itálico de Cormorant
+              es un swash muy cargado, se lo deja recto. */}
           <p className="font-classic text-3xl italic tracking-wide">
-            Hippie &amp; Chic
+            Hippie <span className="not-italic">&amp;</span> Chic
           </p>
 
           <div className="flex items-center gap-4">
