@@ -175,11 +175,13 @@ export default function HeroEditorial({ images = [] }) {
           <div className="absolute inset-0 bg-dune" />
         )}
 
-        {/* Foto chica superpuesta: desborda hacia la izquierda y pisa la
-            columna de texto, a propósito. Solo en desktop — en mobile no hay
-            columna que pisar y taparía la foto principal. */}
+        {/* Foto chica superpuesta. En desktop desborda hacia la izquierda y
+            pisa la columna de texto, a propósito. En mobile no hay columna que
+            pisar y ese desborde se saldría de la pantalla (scroll horizontal),
+            así que se apoya adentro de la foto, abajo a la izquierda, y más
+            chica para no taparla. */}
         {insetImage && (
-          <div className="absolute bottom-14 -left-14 hidden h-[264px] w-[200px] overflow-hidden border border-sand/50 shadow-[0_28px_60px_rgba(43,33,28,0.28)] lg:block">
+          <div className="absolute bottom-12 left-4 h-[145px] w-[110px] overflow-hidden border border-sand/50 shadow-[0_28px_60px_rgba(43,33,28,0.28)] sm:h-[180px] sm:w-[136px] lg:-left-14 lg:bottom-14 lg:h-[264px] lg:w-[200px]">
             <Image
               // key con la URL: al cambiar de foto React monta un <img> nuevo
               // y la transición de opacidad vuelve a correr desde 0.
@@ -187,7 +189,7 @@ export default function HeroEditorial({ images = [] }) {
               src={insetImage}
               alt=""
               fill
-              sizes="200px"
+              sizes="(min-width: 1024px) 200px, 140px"
               className="animate-[hero-inset-fade_600ms_ease] object-cover"
             />
           </div>
