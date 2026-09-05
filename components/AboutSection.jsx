@@ -1,76 +1,67 @@
 import Image from "next/image";
-import { Calendar, Truck, Users } from "lucide-react";
-import BotanicalAccent from "@/components/ui/BotanicalAccent";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Reveal from "@/components/ui/Reveal";
+import { buildWhatsAppUrl } from "@/lib/whatsapp";
 
-const HIGHLIGHTS = [
-  { Icon: Users, label: "+41.000 seguidoras" },
-  { Icon: Truck, label: "Envíos a todo el país" },
-  { Icon: Calendar, label: "Atención con cita previa" },
-];
-
+// Cambio #8 del handoff: el bloque baja al final de la home (antes iba
+// segundo, arriba del catálogo) y se acorta. Los tres datos que estaban acá
+// sueltos (seguidoras / envíos / cita previa) se fueron al hero como prueba
+// social (cambio #7), así que este bloque queda solo con el relato + un CTA.
 export default function AboutSection() {
-  return (
-    // Bloque tonal a sangre completa: el cambio de tono contra las secciones
-    // vecinas es lo que las separa, sin necesitar bordes ni divisores.
-    <section className="relative overflow-hidden bg-dune">
-      <BotanicalAccent className="pointer-events-none absolute bottom-0 left-0 hidden h-80 w-auto -translate-x-1/3 text-olive opacity-[0.15] lg:block" />
+  // Devuelve null si falta NEXT_PUBLIC_WHATSAPP_NUMBER: en ese caso se omite
+  // el link en vez de armar un wa.me/undefined roto.
+  const whatsappUrl = buildWhatsAppUrl(
+    "Hola! Quería pedir una cita para el showroom."
+  );
 
-      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-        <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
-          {/* Texto primero en el markup: queda arriba en mobile (apilado) y a
-              la izquierda en desktop, sin necesitar clases order-*. */}
-          <Reveal className="flex flex-col">
+  return (
+    <section className="mx-auto max-w-7xl px-4 pt-20 sm:px-6 sm:pt-28 lg:px-8">
+      <Reveal>
+        {/* Un solo bloque tonal partido en dos, sin gap: la foto llega hasta
+            el borde del panel de texto, como en el mock. */}
+        <div className="grid grid-cols-1 items-stretch bg-dune md:grid-cols-2">
+          <div className="relative min-h-[280px] sm:min-h-[380px] md:min-h-[460px]">
+            <Image
+              src="/about.jpg"
+              alt="Showroom de Hippie & Chic"
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover"
+            />
+          </div>
+
+          <div className="flex flex-col justify-center gap-5 px-6 py-12 sm:px-10 sm:py-14 lg:px-14">
             <Eyebrow>Conocé la tienda</Eyebrow>
 
-            <h2 className="mb-5 font-classic text-3xl font-semibold leading-tight sm:text-5xl">
-              {/* El "&" itálico de Cormorant es un glifo swash muy cargado,
-                  desentona al lado de las letras — se lo saca de la itálica
-                  para que use la forma recta normal. */}
+            <h2 className="font-display text-[clamp(2.1rem,3.2vw,3rem)] leading-[1.03]">
+              {/* El "&" itálico desentona al lado de las letras: se lo deja
+                  recto aunque el resto del nombre vaya en itálica. */}
               Detrás de{" "}
-              <em className="italic">
+              <span className="font-accent">
                 Hippie <span className="not-italic">&amp;</span> Chic
-              </em>
+              </span>
             </h2>
 
-            {/* TODO: copy placeholder, falta confirmarlo con la dueña. */}
-            <p className="max-w-prose font-body text-base leading-relaxed text-ink/80">
-              Hace años armamos Hippie &amp; Chic pensando en mujeres que buscan
-              piezas con personalidad: cueros, denim y esa mezcla boho-rockera
-              que nos representa. Atendemos con cita previa en nuestro showroom
-              en Córdoba, y enviamos a todo el país.
+            <p className="max-w-[52ch] font-body text-base leading-relaxed text-ink/80 sm:text-[17px]">
+              Armamos la tienda pensando en mujeres que buscan piezas con
+              personalidad: cueros, denim y esa mezcla boho-rockera que nos
+              representa. Atendemos con cita previa en el showroom de Córdoba y
+              enviamos a todo el país.
             </p>
 
-            <ul className="mt-9 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-7">
-              {HIGHLIGHTS.map(({ Icon, label }) => (
-                <li
-                  key={label}
-                  className="flex items-center gap-2.5 font-body text-sm"
-                >
-                  <Icon
-                    className="h-4 w-4 shrink-0 text-caramel"
-                    strokeWidth={1.5}
-                  />
-                  {label}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-
-          <Reveal delay={0.12}>
-            <div className="relative aspect-4/5 w-full overflow-hidden rounded-sm bg-caramel">
-              <Image
-                src="/about.jpg"
-                alt="Showroom de Hippie & Chic"
-                fill
-                sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-cover"
-              />
-            </div>
-          </Reveal>
+            {whatsappUrl && (
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 self-start border-b border-ink pb-1.5 font-body text-[13px] uppercase tracking-[0.12em] text-ink transition-colors hover:border-caramel hover:text-caramel"
+              >
+                Pedir una cita →
+              </a>
+            )}
+          </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

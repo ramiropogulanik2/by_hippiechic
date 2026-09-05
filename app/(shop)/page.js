@@ -1,7 +1,7 @@
 import AboutSection from "@/components/AboutSection";
 import CategoryCard from "@/components/CategoryCard";
-import HeroCarousel from "@/components/HeroCarousel";
-import LogoMarquee from "@/components/LogoMarquee";
+import HeroEditorial from "@/components/HeroEditorial";
+import InfoMarquee from "@/components/InfoMarquee";
 import BotanicalAccent from "@/components/ui/BotanicalAccent";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Reveal from "@/components/ui/Reveal";
@@ -36,17 +36,13 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* El margen negativo mete el hero por debajo del header sticky, que en
-          la home arranca transparente. Sin esto quedaría una franja de fondo
-          claro arriba de la primera foto y el hero perdería el efecto de
-          pantalla completa. */}
-      <div className="-mt-16 sm:-mt-20">
-        <HeroCarousel images={heroImageUrls} />
-      </div>
+      {/* El hero ya no se mete por debajo del header: dejó de ser una foto a
+          pantalla completa con el header transparente encima, ahora es un
+          bloque partido (texto izquierda / carrusel derecha) que arranca
+          debajo de la barra. */}
+      <HeroEditorial images={heroImageUrls} />
 
-      <LogoMarquee />
-
-      <AboutSection />
+      <InfoMarquee />
 
       {/* ---------- Categorías ---------- */}
       <section
@@ -91,6 +87,10 @@ export default async function HomePage() {
           )}
         </div>
       </section>
+
+      {/* Cambio #8: "Detrás de" pasa a ser el cierre de la home, después del
+          catálogo, en vez de interponerse entre el hero y las categorías. */}
+      <AboutSection />
     </>
   );
 }

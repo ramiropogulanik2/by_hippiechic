@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { label: "Hero", href: "/admin/hero" },
   { label: "Categorías", href: "/admin/categorias" },
   { label: "Productos", href: "/admin/productos" },
+  { label: "Oportunidades", href: "/admin/oportunidades" },
   { label: "Pedidos", href: "/admin/pedidos" },
 ];
 

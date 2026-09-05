@@ -400,3 +400,63 @@ Siguiendo el mismo formato de la auditoría: PASO 1 y 2 mecánicos (contraste), 
 - npm run build sin errores.
 - Pendiente de confirmar con la dueña: "de palta" en el pedido original no se entendió a qué se refería (no hay ningún filtro de "palta" pedido en el resto del mensaje) — se avisa en vez de adivinar. Si era un typo por "talle", ya está cubierto; si era otra cosa (color, precio como filtro con rango en vez de solo orden), se agrega aparte.
 - npm run build sin errores en cada paso.
+## Fase 20 — Rediseño del home (handoff `design_handoff_hippiechic_home/`)
+
+Rama: `rediseno/home-2026`. Del "Change list" del handoff (12 cambios independientes) se implementaron los **1, 2, 5, 6, 7, 8, 10, 11 y 12**. NO se implementaron el 3 (grilla de destacados), el 4 (categorías en 3 familias) ni el 9 (bloque WhatsApp full-width) — no fueron pedidos.
+
+### Cambio 1 — Hero editorial partido, con carrusel
+- `components/HeroEditorial.jsx` reemplaza a `components/HeroCarousel.jsx` (borrado).
+- Texto a la izquierda (eyebrow / h1 / párrafo / botonera / prueba social) y foto a la derecha, con la foto chica superpuesta que desborda hacia la izquierda.
+- Vuelta pedida sobre el handoff: la foto de la derecha **no es fija**, es un carrusel tipo publicación de Instagram — una foto entera por vez, arrastre táctil, puntitos abajo, flechas al hover en desktop, loop infinito.
+- Las fotos siguen saliendo de `hero_images`, así que **se administran igual que siempre desde /admin/hero** (subir, ordenar, borrar). No hizo falta ningún campo nuevo.
+- La foto chica superpuesta muestra siempre la **siguiente** del carrusel, con un crossfade (keyframe `hero-inset-fade`). Así queda sincronizada sola y no hay que configurarla aparte. Se actualizó el texto de ayuda de /admin/hero para explicarlo.
+- El home dejó de meter el hero por debajo del header (el `-mt-16 sm:-mt-20`) y el header dejó de ser transparente sobre el hero: ahora arranca sólido en todas las páginas.
+
+### Cambio 2 — Marquee informativo
+- `components/InfoMarquee.jsx` reemplaza a `components/LogoMarquee.jsx` (borrado). El keyframe `marquee-logo` pasó a llamarse `marquee`.
+- **Copy adaptado a lo que es cierto hoy**: el mock traía "3 cuotas sin interés" y "Cambios sin cargo en Córdoba"; hoy el único medio de pago es transferencia y la política de cambios no está confirmada, así que las frases se alinearon con `lib/policyContent.js` (envíos, transferencia, cambios dentro de los 7 días, showroom con cita, WhatsApp). Si mañana las promesas del mock son ciertas, se agregan ahí.
+- La tanda duplicada (la que hace que el loop no salte) va con `aria-hidden`: el lector de pantalla escucha las frases una sola vez.
+
+### Cambio 5 — Barra de anuncio
+- `components/AnnouncementBar.jsx`, montada en `app/(shop)/layout.js` arriba del header. No es sticky a propósito (si lo fuera, en mobile se comería ~120px de alto útil junto con el header).
+
+### Cambio 6 — Header sticky con nav, WhatsApp y carrito
+- Logo izquierda, nav centro, acciones derecha. Desaparece toda la lógica de "header transparente sobre el hero" y el listener de scroll.
+- Nav: Novedades / Ropa / Cueros & Denim / Accesorios / Oportunidades (esta última en caramel). **Destinos provisorios**, como aclara el propio handoff: apuntan a la categoría más representativa de cada familia porque todavía no existe una página de familia (cambio 4) ni una sección de destacados (cambio 3).
+- Abajo de `lg` la nav colapsa en un panel desplegable con botón hamburguesa; el panel se cierra solo al navegar (el header vive en el layout y no se desmonta).
+- `components/CartLink.jsx` pasó de ícono suelto a botón sólido "Carrito (N)". El texto se esconde en mobile, el contador no.
+
+### Cambio 7 — Prueba social en el hero
+- 41k Seguidoras / 8 Años de tienda / 48h Despacho, en la columna de texto del hero.
+- **TODO**: confirmar "8 años" y "48 h" con la dueña antes de publicar (el handoff lo marca como dato a verificar). El de seguidoras sí está verificado.
+
+### Cambio 8 — "Detrás de Hippie & Chic" abajo y más corto
+- `components/AboutSection.jsx`: pasa de segundo bloque del home a cierre, después del catálogo. Foto a la izquierda a sangre del panel, texto a la derecha, sin la lista de 3 highlights (se fueron al hero como prueba social) y con el CTA nuevo "Pedir una cita" a WhatsApp.
+
+### Cambio 10 — Footer de 4 columnas
+- Marca+redes / Comprar / Ayuda / Showroom. Los popups de políticas que ya existían se repartieron entre Comprar y Ayuda; se sumó Contacto (wa.me) y el bloque de Showroom.
+- **Se mantuvo el footer en espresso, no en papel como el mock**: el mock lo dibuja claro porque arriba lleva el bloque negro de WhatsApp (cambio 9, no pedido). Conservando el CTA oscuro que ya existía, un footer claro debajo sería la misma banda oscura partida al medio.
+- **TODO**: confirmar el horario del showroom ("Lun a Vie · 10 a 18 h") antes de publicar.
+
+### Cambio 11 — Tipografía nueva
+- Instrument Serif (titulares, 400 + itálica real) + Jost (interfaz y cuerpo, variable). Reemplazan a Fraunces + Karla + Cormorant + Caveat: de cuatro familias a dos.
+- Los tokens no cambiaron de nombre (`font-display` / `font-body` / `font-accent` siguen usándose en todo el sitio), solo a qué familia apuntan — el cambio de identidad no obligó a tocar componente por componente.
+- Se eliminaron los tokens `--font-classic` y `--font-handwritten` (eran Cormorant y Caveat, ya sin usuarios) y las font-variation-settings de los ejes SOFT/WONK de Fraunces, que Instrument Serif no tiene.
+- `.font-display { font-weight: 400 }` sin capa: Instrument Serif solo existe en 400 y un `font-semibold` heredado dispararía la negrita sintética del navegador, que engorda los trazos de forma despareja. Como la regla va fuera de `@layer`, gana sobre las utilidades de Tailwind y neutraliza los `font-semibold` que ya estaban escritos junto a `font-display` en varias pantallas — no hizo falta editarlos uno por uno.
+
+### Cambio 12 — Badge "Oportunidad" + precio anterior tachado, con gestión en el admin
+- Migración `20260905180000_add_product_badge_and_compare_at_price.sql`: `products.compare_at_price numeric(10,2)` y `products.badge text`, más dos check constraints — badge solo puede ser "nuevo" u "oportunidad", y el precio anterior tiene que ser mayor que el actual (uno menor sería un tachado que muestra un aumento).
+- `compare_at_price` es solo el precio de lista **anterior**. El vigente sigue siendo `products.price`, que es el que va a `order_items` — el carrito y los pedidos no se tocaron.
+- `components/ProductCard.jsx`: badge arriba a la izquierda de la foto (espresso para "Nuevo", terracota para "Oportunidad") y, si hay precio anterior, el vigente pasa a caramel con el de lista tachado al lado. Sin oferta, la tarjeta se ve exactamente igual que antes.
+- Lo mismo en la ficha de producto (`app/(shop)/producto/[slug]/page.js`) y en el listado del admin, que además muestra el % de descuento.
+- `lib/productBadge.js`: única fuente de los valores/estilos de badge (los mismos dos que valida la constraint) y del cálculo de descuento.
+- **Gestión en el admin, por dos vías**:
+  1. `components/admin/ProductForm.jsx`: fieldset "Oferta y etiqueta" con precio anterior + select de etiqueta. Avisa en vivo las dos combinaciones que la base rechaza (precio anterior menor o igual al actual; "Oportunidad" sin precio anterior) en vez de rebotar con un error del servidor.
+  2. **Pantalla nueva `/admin/oportunidades`**: la vista de conjunto. Arriba, poner un producto en oferta eligiéndolo de una lista (muestra el % que queda antes de guardar); abajo, todo lo que está en oferta o etiquetado hoy, con edición inline del precio anterior y la etiqueta, y "Quitar" para levantar la liquidación sin abrir producto por producto. `lib/actions/offers.js` valida contra el precio real de la base, no contra lo que mande el cliente.
+- **Datos de ejemplo cargados a mano** en los 3 productos de la categoría Oportunidades (+2 con "Nuevo") para poder ver el cambio funcionando. **Revisar o borrar esos precios anteriores desde /admin/oportunidades antes de mergear a main** — son inventados.
+
+### Notas técnicas de la Fase 20
+- `npm run build` sin errores. Verificado en el navegador (localhost:3000): fuentes reales cargadas (Instrument Serif / Jost), header sticky, 6 puntitos en el carrusel del hero, foto superpuesta visible, badges en terracota y precios tachados en /categoria/oportunidades y en la ficha, sin overflow horizontal ni en 1280px ni en 375px, nav colapsada + panel desplegable funcionando en mobile.
+- `npx eslint .` devuelve 5 errores de `react-hooks/set-state-in-effect` / `immutability` — todos preexistentes y del mismo patrón que ya había en main (carrito, CookieBanner, CartLink, el efecto del header y el del carrusel). No se introdujo ninguna clase nueva.
+- La migración se aplicó también al proyecto remoto de Supabase. Es aditiva (dos columnas nullable), así que `main` no se ve afectada hasta que se mergee este código.
+- Pendiente de esta PC: no tengo la `SUPABASE_SERVICE_ROLE_KEY`, así que el `.env.local` local usa la anon key en su lugar. Alcanza para el sitio público, pero el admin no puede guardar hasta poner la key real.

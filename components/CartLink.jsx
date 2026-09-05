@@ -9,9 +9,9 @@ export default function CartLink() {
   const items = useCartStore((state) => state.items);
 
   // El servidor no tiene localStorage, así que siempre renderiza "sin datos".
-  // Hasta que montemos en el cliente mostramos el ícono pelado; recién ahí
-  // aparece el badge. Sin este guard, el HTML del server y el del cliente
-  // difieren y React tira mismatch de hidratación.
+  // Hasta que montemos en el cliente mostramos el contador en 0; recién ahí
+  // aparece el número real. Sin este guard, el HTML del server y el del
+  // cliente difieren y React tira mismatch de hidratación.
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -32,17 +32,15 @@ export default function CartLink() {
               totalQuantity === 1 ? "artículo" : "artículos"
             }`
       }
-      // Sin color propio: hereda el del <nav>, que cambia según el header
-      // esté sobre el hero (claro) o sobre fondo sólido (oscuro).
-      className="relative inline-flex transition-colors hover:text-caramel"
+      // Botón sólido (cambio #6): el carrito es la acción principal del
+      // header y antes era un ícono suelto que se perdía al lado del logo.
+      className="flex items-center gap-2 bg-ink px-3 py-2.5 font-body text-xs uppercase tracking-[0.1em] text-sand transition-colors hover:bg-caramel sm:px-4"
     >
-      <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
-
-      {totalQuantity > 0 && (
-        <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-caramel px-1 font-body text-[10px] font-semibold leading-none text-sand">
-          {totalQuantity}
-        </span>
-      )}
+      <ShoppingBag className="h-4 w-4" strokeWidth={1.5} />
+      {/* El texto se esconde en mobile pero el contador no: es el dato que
+          hace falta ver de un vistazo. */}
+      <span className="hidden sm:inline">Carrito</span>
+      <span>({totalQuantity})</span>
     </Link>
   );
 }

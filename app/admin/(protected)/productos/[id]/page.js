@@ -13,7 +13,9 @@ export default async function EditProductPage({ params }) {
   // Cliente admin para poder editar también los productos despublicados.
   const { data: product } = await supabase
     .from("products")
-    .select("id, name, description, price, category_id, is_published")
+    .select(
+      "id, name, description, price, compare_at_price, badge, category_id, is_published"
+    )
     .eq("id", id)
     .maybeSingle();
 
@@ -49,9 +51,7 @@ export default async function EditProductPage({ params }) {
           ← Volver
         </Link>
 
-        <h1 className="font-display text-3xl font-semibold">
-          Editar {product.name}
-        </h1>
+        <h1 className="font-display text-3xl">Editar {product.name}</h1>
       </div>
 
       {/* bind fija el id del lado servidor: ProductForm siempre llama

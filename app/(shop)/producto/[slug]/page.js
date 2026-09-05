@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import ProductGallery from "@/components/ProductGallery";
 import ProductVariantSelector from "@/components/ProductVariantSelector";
 import { formatPrice } from "@/lib/format";
+import { BADGES } from "@/lib/productBadge";
 import { createClient } from "@/lib/supabase/server";
 
 // Resumen corto a propósito: la versión larga de cada tema ya vive en
@@ -22,7 +23,9 @@ export default async function ProductPage({ params }) {
 
   const { data: product } = await supabase
     .from("products")
-    .select("id, name, description, price, is_published, categories(name, slug)")
+    .select(
+      "id, name, description, price, badge, compare_at_price, is_published, categories(name, slug)"
+    )
     .eq("slug", slug)
     .maybeSingle();
 
@@ -48,6 +51,16 @@ export default async function ProductPage({ params }) {
       .eq("product_id", product.id),
   ]);
 
+  const badgeStyle = product.badge ? BADGES[product.badge] : null;
+
+  // Mismo criterio que en la tarjeta: solo se tacha si el precio anterior es
+  // efectivamente mayor que el vigente.
+  const previousPrice =
+    product.compare_at_price != null &&
+    Number(product.compare_at_price) > Number(product.price)
+      ? Number(product.compare_at_price)
+      : null;
+
   const breadcrumbItems = [
     { label: "Inicio", href: "/" },
     ...(category
@@ -70,19 +83,44 @@ export default async function ProductPage({ params }) {
             para elegir el talle. */}
         <div className="flex flex-col gap-7 lg:sticky lg:top-28 lg:self-start">
           <div className="flex flex-col gap-4 border-b border-ink/10 pb-7">
-            {category && (
-              <p className="font-body text-[11px] font-semibold uppercase tracking-[0.22em] text-caramel">
-                {category.name}
-              </p>
-            )}
+            <div className="flex flex-wrap items-center gap-3">
+              {category && (
+                <p className="font-body text-[11px] font-semibold uppercase tracking-[0.22em] text-caramel">
+                  {category.name}
+                </p>
+              )}
+
+              {badgeStyle && (
+                <span
+                  className={`px-2.5 py-1.5 font-body text-[10px] uppercase tracking-[0.16em] ${badgeStyle.className}`}
+                >
+                  {badgeStyle.label}
+                </span>
+              )}
+            </div>
 
             <h1 className="font-display text-3xl leading-tight sm:text-5xl">
               {product.name}
             </h1>
 
-            <p className="font-display text-2xl font-semibold sm:text-3xl">
-              {formatPrice(product.price)}
-            </p>
+            {/* Cambio #12: si hay precio anterior cargado, el vigente pasa
+                a terracota y al lado va el de lista tachado. Sin oferta se
+                ve exactamente igual que antes. */}
+            <div className="flex flex-wrap items-baseline gap-3">
+              <p
+                className={`font-display text-2xl sm:text-3xl ${
+                  previousPrice ? "text-caramel" : "text-ink"
+                }`}
+              >
+                {formatPrice(product.price)}
+              </p>
+
+              {previousPrice && (
+                <p className="font-body text-base text-ink/45 line-through">
+                  {formatPrice(previousPrice)}
+                </p>
+              )}
+            </div>
           </div>
 
           {product.description && (

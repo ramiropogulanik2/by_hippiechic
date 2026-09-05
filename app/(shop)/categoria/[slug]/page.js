@@ -87,7 +87,7 @@ export default async function CategoryPage({ params, searchParams }) {
   if (!matchingProductIds || matchingProductIds.length > 0) {
     let query = supabase
       .from("products")
-      .select("id, name, price, slug")
+      .select("id, name, price, slug, badge, compare_at_price")
       .eq("category_id", category.id)
       .eq("is_published", true);
 
@@ -189,6 +189,8 @@ export default async function CategoryPage({ params, searchParams }) {
                 price={product.price}
                 imageUrl={firstImageByProduct.get(product.id) ?? null}
                 slug={product.slug}
+                badge={product.badge}
+                compareAtPrice={product.compare_at_price}
               />
             </Reveal>
           ))}

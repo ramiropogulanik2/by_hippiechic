@@ -39,19 +39,15 @@
 /* `inline` para que las utilidades resuelvan la variable que next/font
    define en el <body>, en vez de una indirección extra. */
 @theme inline {
-  --font-display: var(--font-fraunces);
-  --font-body: var(--font-karla);
-  /* font-accent ya no es una manuscrita aparte: es la misma Fraunces, que
-     al ser variable trae su propio carácter vía los ejes SOFT/WONK (ver
-     .font-accent más abajo). Una familia menos, más rango dentro de la que
-     queda. */
-  --font-accent: var(--font-fraunces);
-  /* Cormorant Garamond, solo para los 3 momentos de marca donde se prefirió
-     la serif original a la Fraunces itálica (ver .font-classic). */
-  --font-classic: var(--font-cormorant);
-  /* Caveat, solo para el texto del hero (ver components/HeroCarousel.jsx) —
-     se pidió que volviera a ser igual al de antes de este experimento. */
-  --font-handwritten: var(--font-caveat);
+  /* Cambio #11 del handoff: Instrument Serif para titulares, Jost para el
+     resto. Los nombres de los tokens no cambian (font-display / font-body /
+     font-accent siguen usándose en todo el sitio), solo a qué familia
+     apuntan — así el cambio de identidad no obliga a tocar cada componente. */
+  --font-display: var(--font-instrument-serif);
+  --font-body: var(--font-jost);
+  /* font-accent es la misma serif en itálica (ver .font-accent más abajo):
+     es el "momento de marca" dentro de un título, no otra familia. */
+  --font-accent: var(--font-instrument-serif);
 }
 
 body {
@@ -59,30 +55,20 @@ body {
   color: var(--color-ink);
 }
 
-/* Fraunces es variable y trae dos ejes que no son grosor:
-   SOFT redondea los terminales (menos severa, más artesanal) y WONK
-   cambia por glifos alternativos con inclinaciones raras. Subidos al
-   máximo en los momentos de acento, dan el carácter setentoso/manuscrito
-   que antes aportaba una fuente aparte. */
+/* Instrument Serif solo existe en 400. `font-style: italic` acá usa la
+   itálica real que se cargó en app/layout.js; sin esa cara, el navegador
+   inclinaría la romana a mano y el resultado se nota falso en tamaños
+   grandes. font-weight fijo en 400 para que un `font-semibold` heredado no
+   dispare la negrita sintética, que en esta serif engorda los trazos de
+   forma despareja. */
 .font-accent {
-  font-variation-settings: "SOFT" 100, "WONK" 1;
   font-style: italic;
+  font-weight: 400;
 }
 
-/* Los títulos usan la misma familia pero SIN wonk: se queda editorial y
-   legible en tamaños grandes, sin la inclinación de los acentos. */
 .font-display {
-  font-variation-settings: "SOFT" 40, "WONK" 0;
+  font-weight: 400;
 }
-
-/* Cormorant Garamond — la serif original del sitio, de antes de este
-   experimento. Se prueba la Fraunces itálica (.font-accent) en toda la
-   marca, pero en 3 momentos puntuales (título del hero, título de "Quiénes
-   somos" y el logotipo del footer) se pidió volver a esta. La utilidad
-   .font-classic la genera Tailwind solo, a partir del token --font-classic
-   de @theme inline de arriba — escribirla acá a mano pisaba esa regla con
-   un var() que no resuelve en runtime (--font-classic no queda expuesta
-   como custom property real, Tailwind la usa solo para generar la clase). */
 
 /* Foco visible por teclado en todos los botones y links del sitio (público y
    admin), de una sola vez en vez de repetir la clase en cada componente.
@@ -94,15 +80,27 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
-/* Banda de logos en movimiento (components/LogoMarquee.jsx): el track
-   duplica el set de logos una vez y anima 0 -> -50%, así el segundo tramo
+/* Cinta informativa en movimiento (components/InfoMarquee.jsx): el track
+   duplica el set de frases una vez y anima 0 -> -50%, así el segundo tramo
    es idéntico al primero y el loop no se nota. */
-@keyframes marquee-logo {
+@keyframes marquee {
   from {
     transform: translateX(0);
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+/* Crossfade de la foto chica superpuesta del hero (components/HeroEditorial):
+   cada vez que cambia el slide se monta un <img> nuevo y entra con esta
+   animación, en vez de aparecer de golpe. */
+@keyframes hero-inset-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

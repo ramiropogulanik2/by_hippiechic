@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ImageIcon } from "lucide-react";
 import ProductRowActions from "@/components/admin/ProductRowActions";
 import { formatPrice } from "@/lib/format";
+import { BADGES, discountPercent } from "@/lib/productBadge";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
@@ -14,7 +15,9 @@ export default async function AdminProductsPage() {
   // también los borradores.
   const { data: products, error } = await supabase
     .from("products")
-    .select("id, name, price, is_published, categories(name)")
+    .select(
+      "id, name, price, compare_at_price, badge, is_published, categories(name)"
+    )
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -46,7 +49,7 @@ export default async function AdminProductsPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="font-display text-3xl font-semibold">Productos</h1>
+        <h1 className="font-display text-3xl">Productos</h1>
 
         <Link
           href="/admin/productos/nuevo"
@@ -67,6 +70,11 @@ export default async function AdminProductsPage() {
               ? product.categories[0]
               : product.categories;
             const coverUrl = coverByProduct.get(product.id);
+            const badgeStyle = product.badge ? BADGES[product.badge] : null;
+            const discount = discountPercent(
+              product.price,
+              product.compare_at_price
+            );
 
             return (
               <li
@@ -108,9 +116,27 @@ export default async function AdminProductsPage() {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 sm:contents">
-                  <span className="font-body text-sm font-bold">
-                    {formatPrice(product.price)}
+                  {/* El precio anterior tachado también acá: si la dueña
+                      dejó una oferta cargada, el listado tiene que mostrarla
+                      sin entrar a editar el producto. */}
+                  <span className="flex flex-wrap items-baseline gap-2">
+                    <span className="font-body text-sm font-bold">
+                      {formatPrice(product.price)}
+                    </span>
+
+                    {discount != null && (
+                      <span className="font-body text-xs text-ink/50 line-through">
+                        {formatPrice(product.compare_at_price)}
+                      </span>
+                    )}
                   </span>
+
+                  {(badgeStyle || discount != null) && (
+                    <span className="rounded-full bg-caramel/20 px-3 py-1 text-xs font-medium text-caramel-deep">
+                      {badgeStyle?.label ?? "En oferta"}
+                      {discount != null ? ` −${discount}%` : ""}
+                    </span>
+                  )}
 
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-medium ${

@@ -25,9 +25,11 @@ export default async function AdminHeroPage() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-1">
-        <h1 className="font-display text-3xl font-semibold">Hero</h1>
+        <h1 className="font-display text-3xl">Hero</h1>
         <p className="font-body text-sm text-ink/70">
-          Fotos que rotan en el carrusel de la portada, en este orden.
+          Fotos del carrusel de la portada, en este orden. La primera es la que
+          se ve al entrar; la foto chica superpuesta muestra siempre la
+          siguiente de la lista.
         </p>
       </div>
 
