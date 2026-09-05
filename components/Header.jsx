@@ -11,15 +11,14 @@ import { buildWhatsAppUrl } from "@/lib/whatsapp";
 // Cambio #6 del handoff: header sticky con navegación por familias, botón de
 // WhatsApp y carrito con contador.
 //
-// Los destinos de "Ropa" / "Cueros & Denim" / "Accesorios" son provisorios y
-// el handoff lo dice: apuntan a la categoría más representativa de cada
-// familia porque todavía no existe una página de familia que las agrupe (ese
-// es el cambio #4, que no se implementó). "Novedades" lleva a la grilla de
+// Los destinos de "Cueros & Denim" y "Accesorios" son provisorios y el
+// handoff lo dice: apuntan a la categoría más representativa de cada familia
+// porque todavía no existe una página de familia que las agrupe (ese es el
+// cambio #4, que no se implementó). "Novedades" lleva a la grilla de
 // categorías del home por el mismo motivo: no hay sección de destacados
 // (cambio #3, tampoco implementado).
 const NAV_LINKS = [
   { label: "Novedades", href: "/#categorias" },
-  { label: "Ropa", href: "/categoria/remeras" },
   { label: "Cueros & Denim", href: "/categoria/pantalones-jeans" },
   { label: "Accesorios", href: "/categoria/carteras-accesorios" },
   { label: "Oportunidades", href: "/categoria/oportunidades", accent: true },

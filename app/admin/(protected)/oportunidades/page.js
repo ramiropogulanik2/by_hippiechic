@@ -2,10 +2,11 @@ import OfferCreateForm from "@/components/admin/OfferCreateForm";
 import OfferRow from "@/components/admin/OfferRow";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-// Pantalla de gestión del cambio #12 del handoff. El form de producto ya
-// deja cargar la oferta prenda por prenda; acá se ve el conjunto: qué está
-// rebajado hoy, con cuánto de descuento, y se saca todo de una liquidación
-// sin abrir 15 productos.
+// Pantalla de gestión del cambio #12 del handoff. Se trabaja como piensa la
+// dueña: "esto cuesta 96.000 y lo bajo a 90.000". Se carga el precio nuevo y
+// el que estaba queda solo como precio anterior (el tachado de la tarjeta).
+// Acá se ve el conjunto: qué está rebajado hoy, con cuánto de descuento, y se
+// levanta la liquidación sin abrir 15 productos.
 export const dynamic = "force-dynamic";
 
 export default async function AdminOffersPage() {
@@ -56,15 +57,16 @@ export default async function AdminOffersPage() {
       <div className="flex flex-col gap-1">
         <h1 className="font-display text-3xl">Oportunidades</h1>
         <p className="font-body text-sm text-ink/70">
-          Precio anterior tachado y etiqueta sobre la foto. El precio que paga
-          la clienta sigue siendo el precio normal del producto — acá solo se
-          carga cuánto costaba antes.
+          Bajá el precio de una prenda y el que tenía queda tachado al lado en
+          la tarjeta. Al terminar la oferta, el precio vuelve solo al de antes.
+          Los pedidos ya hechos no cambian: guardan el precio del momento de la
+          compra.
         </p>
       </div>
 
       <section className="flex flex-col gap-3">
         <h2 className="font-body text-xs font-semibold uppercase tracking-[0.16em] text-ink/70">
-          Poner un producto en oferta
+          Bajar el precio de un producto
         </h2>
 
         <OfferCreateForm products={available} />

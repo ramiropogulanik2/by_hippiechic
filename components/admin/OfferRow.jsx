@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ImageIcon } from "lucide-react";
-import { clearProductOffer, saveProductOffer } from "@/lib/actions/offers";
+import { endProductOffer, saveProductOffer } from "@/lib/actions/offers";
 import { formatPrice } from "@/lib/format";
 import { BADGE_OPTIONS, discountPercent } from "@/lib/productBadge";
 
@@ -15,21 +15,25 @@ const inputClass =
 export default function OfferRow({ product }) {
   const router = useRouter();
 
-  const [compareAtPrice, setCompareAtPrice] = useState(
-    product.compare_at_price != null ? String(product.compare_at_price) : ""
-  );
+  const savedPrice = String(product.price);
+  const savedCompare =
+    product.compare_at_price != null ? String(product.compare_at_price) : "";
+
+  const [price, setPrice] = useState(savedPrice);
+  const [compareAtPrice, setCompareAtPrice] = useState(savedCompare);
   const [badge, setBadge] = useState(product.badge ?? "");
   const [errorMessage, setErrorMessage] = useState("");
   const [isPending, startTransition] = useTransition();
 
   // Se compara contra lo guardado para no ofrecer "Guardar" cuando no hay
   // nada que guardar (y para no pisar la fila con un update inútil).
-  const savedCompare =
-    product.compare_at_price != null ? String(product.compare_at_price) : "";
   const isDirty =
-    compareAtPrice !== savedCompare || badge !== (product.badge ?? "");
+    price !== savedPrice ||
+    compareAtPrice !== savedCompare ||
+    badge !== (product.badge ?? "");
 
-  const discount = discountPercent(product.price, compareAtPrice);
+  const discount = discountPercent(price, compareAtPrice);
+  const savedDiscount = discountPercent(product.price, product.compare_at_price);
 
   function run(actionPromise) {
     setErrorMessage("");
@@ -47,6 +51,21 @@ export default function OfferRow({ product }) {
       // "sin guardar" después de guardar.
       router.refresh();
     });
+  }
+
+  function handleEnd() {
+    // Terminar la oferta devuelve el precio al que estaba: es un cambio de
+    // precio sobre el catálogo publicado, así que se dice cuál va a quedar.
+    const message =
+      product.compare_at_price != null
+        ? `¿Terminar la oferta de "${product.name}"? El precio vuelve a ${formatPrice(
+            product.compare_at_price
+          )}.`
+        : `¿Sacarle la etiqueta a "${product.name}"? El precio no cambia.`;
+
+    if (!window.confirm(message)) return;
+
+    run(endProductOffer(product.id));
   }
 
   return (
@@ -74,15 +93,38 @@ export default function OfferRow({ product }) {
             {product.name}
           </Link>
 
-          <span className="text-xs text-ink/70">
-            Precio actual {formatPrice(product.price)}
-            {discount != null ? ` · −${discount}%` : ""}
-            {product.is_published ? "" : " · sin publicar"}
+          {/* Lo guardado, no lo que hay tipeado en los inputs: es la línea
+              contra la que se compara mientras se edita. */}
+          <span className="flex flex-wrap items-baseline gap-2 text-xs text-ink/70">
+            <span>Hoy se vende a {formatPrice(product.price)}</span>
+
+            {product.compare_at_price != null && (
+              <>
+                <span className="line-through">
+                  {formatPrice(product.compare_at_price)}
+                </span>
+                <span className="text-caramel-deep">−{savedDiscount}%</span>
+              </>
+            )}
+
+            {product.is_published ? null : <span>· sin publicar</span>}
           </span>
         </div>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <label className="flex flex-1 flex-col gap-1.5 text-sm">
+          <span className="font-medium">Precio de venta</span>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            value={price}
+            onChange={(event) => setPrice(event.target.value)}
+            className={inputClass}
+          />
+        </label>
+
         <label className="flex flex-1 flex-col gap-1.5 text-sm">
           <span className="font-medium">Precio anterior</span>
           <input
@@ -91,7 +133,7 @@ export default function OfferRow({ product }) {
             step="0.01"
             value={compareAtPrice}
             onChange={(event) => setCompareAtPrice(event.target.value)}
-            placeholder="Sin oferta"
+            placeholder="Sin tachado"
             className={inputClass}
           />
         </label>
@@ -117,7 +159,7 @@ export default function OfferRow({ product }) {
             type="button"
             disabled={isPending || !isDirty}
             onClick={() =>
-              run(saveProductOffer(product.id, { compareAtPrice, badge }))
+              run(saveProductOffer(product.id, { price, compareAtPrice, badge }))
             }
             className="rounded-full bg-ink px-5 py-2.5 font-body text-sm font-medium text-sand transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           >
@@ -127,13 +169,20 @@ export default function OfferRow({ product }) {
           <button
             type="button"
             disabled={isPending}
-            onClick={() => run(clearProductOffer(product.id))}
+            onClick={handleEnd}
             className="rounded-full border border-ink/20 px-5 py-2.5 font-body text-sm text-ink/70 transition-colors hover:border-rose hover:text-rose disabled:cursor-not-allowed disabled:opacity-40"
           >
-            Quitar
+            Terminar
           </button>
         </div>
       </div>
+
+      {isDirty && discount != null && (
+        <p className="font-body text-sm text-ink/70">
+          Va a quedar en {formatPrice(price)} con {formatPrice(compareAtPrice)}{" "}
+          tachado — {discount}% off.
+        </p>
+      )}
 
       {errorMessage && <p className="text-sm text-rose">{errorMessage}</p>}
     </li>

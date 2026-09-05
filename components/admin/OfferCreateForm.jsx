@@ -2,28 +2,37 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { saveProductOffer } from "@/lib/actions/offers";
+import { startProductOffer } from "@/lib/actions/offers";
 import { formatPrice } from "@/lib/format";
 import { BADGE_OPTIONS, discountPercent } from "@/lib/productBadge";
 
 const inputClass =
   "w-full rounded-sm border border-ink/20 bg-card px-3 py-2 font-body text-sm text-ink placeholder:text-ink/60 focus:border-caramel focus:outline-none";
 
-// Poner un producto en oferta sin pasar por el form completo del producto:
-// elegís la prenda, ponés cuánto costaba y listo.
+// Bajar el precio de una prenda sin pasar por el form completo del producto:
+// elegís la prenda, ponés cuánto va a costar ahora, y el precio que tenía
+// queda guardado solo como precio anterior (el tachado de la tarjeta).
 export default function OfferCreateForm({ products = [] }) {
   const router = useRouter();
 
   const [productId, setProductId] = useState("");
-  const [compareAtPrice, setCompareAtPrice] = useState("");
+  const [salePrice, setSalePrice] = useState("");
   const [badge, setBadge] = useState("oportunidad");
   const [errorMessage, setErrorMessage] = useState("");
   const [isPending, startTransition] = useTransition();
 
   const selected = products.find((product) => product.id === productId) ?? null;
-  const discount = selected
-    ? discountPercent(selected.price, compareAtPrice)
-    : null;
+
+  const parsedSale = salePrice.trim() ? Number(salePrice) : null;
+  const currentPrice = selected ? Number(selected.price) : null;
+
+  const isTooHigh =
+    parsedSale != null &&
+    currentPrice != null &&
+    Number.isFinite(parsedSale) &&
+    parsedSale >= currentPrice;
+
+  const discount = selected ? discountPercent(salePrice, selected.price) : null;
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -33,22 +42,26 @@ export default function OfferCreateForm({ products = [] }) {
       return;
     }
 
+    if (isTooHigh) {
+      setErrorMessage(
+        `El precio de oferta tiene que ser menor que ${formatPrice(currentPrice)}.`
+      );
+      return;
+    }
+
     setErrorMessage("");
 
     startTransition(async () => {
-      const result = await saveProductOffer(productId, {
-        compareAtPrice,
-        badge,
-      });
+      const result = await startProductOffer(productId, { salePrice, badge });
 
       if (!result?.success) {
         setErrorMessage(result?.error ?? "Algo salió mal. Probá de nuevo.");
         return;
       }
 
-      // El producto pasa a la lista de arriba, así que el form vuelve a cero.
+      // El producto pasa a la lista de abajo, así que el form vuelve a cero.
       setProductId("");
-      setCompareAtPrice("");
+      setSalePrice("");
       setBadge("oportunidad");
       router.refresh();
     });
@@ -85,14 +98,16 @@ export default function OfferCreateForm({ products = [] }) {
         </label>
 
         <label className="flex flex-1 flex-col gap-1.5 text-sm">
-          <span className="font-medium">Precio anterior</span>
+          <span className="font-medium">Nuevo precio</span>
           <input
             type="number"
             min="0"
             step="0.01"
-            value={compareAtPrice}
-            onChange={(event) => setCompareAtPrice(event.target.value)}
-            placeholder="Cuánto costaba"
+            value={salePrice}
+            onChange={(event) => setSalePrice(event.target.value)}
+            placeholder={
+              currentPrice != null ? `Menos de ${currentPrice}` : "Precio rebajado"
+            }
             className={inputClass}
           />
         </label>
@@ -115,17 +130,30 @@ export default function OfferCreateForm({ products = [] }) {
 
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || isTooHigh}
           className="rounded-full bg-ink px-6 py-2.5 font-body text-sm font-medium text-sand transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {isPending ? "Guardando..." : "Poner en oferta"}
+          {isPending ? "Bajando..." : "Bajar el precio"}
         </button>
       </div>
 
-      {discount != null && (
+      {/* Se dice en palabras lo que va a pasar antes de que pase: es un
+          cambio de precio real sobre el catálogo publicado. */}
+      {selected && !isTooHigh && discount != null && (
         <p className="font-body text-sm text-ink/70">
-          Queda con un {discount}% de descuento sobre{" "}
-          {formatPrice(selected.price)}.
+          Pasa de {formatPrice(selected.price)} a{" "}
+          <strong className="font-medium text-caramel">
+            {formatPrice(parsedSale)}
+          </strong>{" "}
+          — {discount}% off. En la tarjeta va a verse{" "}
+          {formatPrice(selected.price)} tachado al lado.
+        </p>
+      )}
+
+      {selected && isTooHigh && (
+        <p className="font-body text-sm text-rose">
+          Tiene que ser menor que {formatPrice(selected.price)}, que es lo que
+          cuesta ahora.
         </p>
       )}
 

@@ -422,7 +422,7 @@ Rama: `rediseno/home-2026`. Del "Change list" del handoff (12 cambios independie
 
 ### Cambio 6 — Header sticky con nav, WhatsApp y carrito
 - Logo izquierda, nav centro, acciones derecha. Desaparece toda la lógica de "header transparente sobre el hero" y el listener de scroll.
-- Nav: Novedades / Ropa / Cueros & Denim / Accesorios / Oportunidades (esta última en caramel). **Destinos provisorios**, como aclara el propio handoff: apuntan a la categoría más representativa de cada familia porque todavía no existe una página de familia (cambio 4) ni una sección de destacados (cambio 3).
+- Nav: Novedades / Cueros & Denim / Accesorios / Oportunidades (esta última en caramel). **Destinos provisorios**, como aclara el propio handoff: apuntan a la categoría más representativa de cada familia porque todavía no existe una página de familia (cambio 4) ni una sección de destacados (cambio 3).
 - Abajo de `lg` la nav colapsa en un panel desplegable con botón hamburguesa; el panel se cierra solo al navegar (el header vive en el layout y no se desmonta).
 - `components/CartLink.jsx` pasó de ícono suelto a botón sólido "Carrito (N)". El texto se esconde en mobile, el contador no.
 
@@ -452,7 +452,8 @@ Rama: `rediseno/home-2026`. Del "Change list" del handoff (12 cambios independie
 - `lib/productBadge.js`: única fuente de los valores/estilos de badge (los mismos dos que valida la constraint) y del cálculo de descuento.
 - **Gestión en el admin, por dos vías**:
   1. `components/admin/ProductForm.jsx`: fieldset "Oferta y etiqueta" con precio anterior + select de etiqueta. Avisa en vivo las dos combinaciones que la base rechaza (precio anterior menor o igual al actual; "Oportunidad" sin precio anterior) en vez de rebotar con un error del servidor.
-  2. **Pantalla nueva `/admin/oportunidades`**: la vista de conjunto. Arriba, poner un producto en oferta eligiéndolo de una lista (muestra el % que queda antes de guardar); abajo, todo lo que está en oferta o etiquetado hoy, con edición inline del precio anterior y la etiqueta, y "Quitar" para levantar la liquidación sin abrir producto por producto. `lib/actions/offers.js` valida contra el precio real de la base, no contra lo que mande el cliente.
+  2. **Pantalla nueva `/admin/oportunidades`**: la vista de conjunto, con el modelo mental de la dueña — "esto cuesta 96.000 y lo bajo a 90.000". Arriba se elige la prenda y se carga el **precio nuevo**; el que tenía queda guardado solo como `compare_at_price` y es el que se dibuja tachado. Antes de guardar dice en palabras qué va a pasar ("Pasa de $96.000 a $90.000 — 6% off"), porque es un cambio de precio real sobre el catálogo publicado. Abajo, todo lo rebajado o etiquetado hoy, con edición inline de los dos precios y la etiqueta, y "Terminar" (con confirmación) que **devuelve el precio al de antes** de la rebaja. `lib/actions/offers.js` valida siempre contra el precio real de la base, no contra lo que mande el cliente.
+  - Los pedidos ya hechos no se ven afectados por las bajas de precio: `order_items.unit_price` guarda el precio del momento de la compra.
 - **Datos de ejemplo cargados a mano** en los 3 productos de la categoría Oportunidades (+2 con "Nuevo") para poder ver el cambio funcionando. **Revisar o borrar esos precios anteriores desde /admin/oportunidades antes de mergear a main** — son inventados.
 
 ### Notas técnicas de la Fase 20
